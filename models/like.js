@@ -8,6 +8,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   )
-  Like.associate = function(models) {}
+  Like.associate = function (models) {}
   return Like
 }
