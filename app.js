@@ -3,6 +3,8 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const passport = require('./config/passport')
+// const FileStore = require('session-file-store')(session)
+// const RedisStore = require('connect-redis')(session)
 // const helpers = require('./_helpers')
 
 const db = require('./models')
@@ -22,17 +24,25 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(bodyParser.text())
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
+app.use(
+  session({
+    // store: new FileStore(),
+    // store: new RedisStore(),
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false
+  })
+)
 app.use(passport.initialize())
 app.use(passport.session())
 
-// app.use((req, res, next) => {
-//   if (req.method == 'GET' || Object.keys(req.body).length == 0) {
-//     return next()
-//   }
-//   req.body = JSON.parse(req.body)
-//   next()
-// })
+app.use((req, res, next) => {
+  if (req.method == 'GET' || Object.keys(req.body).length == 0) {
+    return next()
+  }
+  req.body = JSON.parse(req.body)
+  next()
+})
 
 app.use('/', require('./routes'))
 
@@ -40,5 +50,3 @@ app.listen(port, () => {
   db.sequelize.sync()
   console.log(`app is listening on http://localhost:${port}`)
 })
-
-// module.exports = app

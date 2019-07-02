@@ -11,9 +11,14 @@ router
   .get(tweetController.getAllTweets)
   .post(tweetController.postTweet)
 
+router.delete('/:tweetId', tweetController.deleteTweet)
+
 router
   .route('/:tweetId/replies')
   .get(tweetController.getTweet)
   .post(tweetController.replyTweet)
+
+router.post('/:tweedId/like', tweetController.likeTweet)
+router.post('/:tweedId/unlike', tweetController.unlikeTweet)
 
 module.exports = router
