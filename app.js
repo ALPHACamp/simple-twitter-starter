@@ -21,6 +21,7 @@ const corsOptions = {
   maxAge: 1728000
 }
 
+app.use(express.static('dist'))
 app.use(cors(corsOptions))
 app.use(bodyParser.text())
 app.use(bodyParser.urlencoded({ extended: false }))

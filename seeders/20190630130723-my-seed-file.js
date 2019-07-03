@@ -1,5 +1,6 @@
 'use strict'
 const crypto = require('crypto')
+const faker = require('faker')
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -12,8 +13,8 @@ module.exports = {
           .createHash('md5')
           .update('12345678', 'utf8')
           .digest('hex'),
-        avatar: null,
-        introduction: 'Hello world',
+        avatar: faker.image.imageUrl(),
+        introduction: faker.lorem.text(),
         createdAt: new Date(),
         updatedAt: new Date()
       })),
@@ -48,7 +49,7 @@ module.exports = {
     return queryInterface.bulkInsert(
       'Tweets',
       Array.from({ length: 10 }).map(d => ({
-        description: '今天天氣真好',
+        description: faker.lorem.text(),
         UserId: Math.floor(Math.random() * 2) + 1,
         createdAt: new Date(),
         updatedAt: new Date()

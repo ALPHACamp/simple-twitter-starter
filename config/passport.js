@@ -3,6 +3,8 @@ const LocalStrategy = require('passport-local')
 const crypto = require('crypto')
 const db = require('../models')
 const User = db.User
+const Tweet = db.Tweet
+const Reply = db.Reply
 
 passport.use(
   new LocalStrategy(
@@ -38,7 +40,30 @@ passport.serializeUser((user, cb) => {
 
 passport.deserializeUser((id, cb) => {
   console.log('deserial')
-  User.findByPk(id).then(user => {
+  User.findByPk(id, {
+    include: [
+      {
+        model: Tweet,
+        include: [
+          Reply,
+          {
+            model: User,
+            as: 'LikedUsers'
+          }
+        ]
+      },
+      {
+        model: User,
+        as: 'Followings'
+      },
+      { model: User, as: 'Followers' },
+      {
+        model: Tweet,
+        as: 'LikedTweets',
+        include: User
+      }
+    ]
+  }).then(user => {
     return cb(null, user)
   })
 })

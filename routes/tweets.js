@@ -11,8 +11,6 @@ router
   .get(tweetController.getAllTweets)
   .post(tweetController.postTweet)
 
-router.delete('/:tweetId', tweetController.deleteTweet)
-
 router
   .route('/:tweetId/replies')
   .get(tweetController.getTweet)

@@ -3,6 +3,7 @@ const Tweet = db.Tweet
 const User = db.User
 const Reply = db.Reply
 const Like = db.Like
+const helpers = require('../_helpers')
 
 const tweetController = {
   getAllTweets(req, res) {
@@ -38,7 +39,7 @@ const tweetController = {
   postTweet(req, res) {
     console.log(req.body)
     Tweet.create({
-      UserId: req.user.id,
+      UserId: helpers.getUser(req).id,
       description: req.body.description
     })
       .then(tweet => {
@@ -99,7 +100,7 @@ const tweetController = {
   },
   replyTweet(req, res) {
     Reply.create({
-      UserId: req.user.id,
+      UserId: helpers.getUser(req).id,
       TweetId: req.params.tweetId,
       comment: req.body.comment
     })
@@ -110,18 +111,10 @@ const tweetController = {
         res.status(404).end()
       })
   },
-  deleteTweet(req, res) {
-    Tweet.destroy({
-      where: {
-        id: req.params.tweetId
-      }
-    }).then(() => {
-      res.send('delete')
-    })
-  },
   likeTweet(req, res) {
+    console.log('here', req.params)
     Like.create({
-      UserId: req.user.id,
+      UserId: helpers.getUser(req).id,
       TweetId: req.params.tweedId
     })
       .then(() => {
@@ -135,7 +128,7 @@ const tweetController = {
   unlikeTweet(req, res) {
     Like.destroy({
       where: {
-        UserId: req.user.id,
+        UserId: helpers.getUser(req).id,
         TweetId: req.params.tweedId
       }
     })

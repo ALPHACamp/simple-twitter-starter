@@ -85,7 +85,7 @@ const userController = {
   editProfile(req, res) {
     User.update(req.body, {
       where: {
-        id: req.user.id
+        id: helpers.getUser(req).id
       }
     })
       .then(() => {
@@ -98,8 +98,8 @@ const userController = {
   },
   follow(req, res) {
     Followship.create({
-      followerId: req.user.id,
-      followingId: req.body.userId
+      followerId: helpers.getUser(req).id,
+      followingId: req.body.UserId
     })
       .then(() => {
         res.status(201).end()
@@ -109,10 +109,11 @@ const userController = {
       })
   },
   unfollow(req, res) {
+    console.log(req.params)
     Followship.destroy({
       where: {
-        followerId: req.user.id,
-        followingId: req.params.userId
+        followerId: helpers.getUser(req).id,
+        followingId: req.params.id
       }
     })
       .then(() => {
