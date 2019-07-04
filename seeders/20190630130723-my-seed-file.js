@@ -15,38 +15,13 @@ module.exports = {
           .digest('hex'),
         avatar: faker.image.imageUrl(),
         introduction: faker.lorem.text(),
+        role: 'user',
         createdAt: new Date(),
         updatedAt: new Date()
       })),
-      // [
-      //   {
-      //     name: 'root',
-      //     email: 'root@example.com',
-      //     password: crypto
-      //       .createHash('md5')
-      //       .update('12345678', 'utf8')
-      //       .digest('hex'),
-      //     avatar: null,
-      //     introduction: 'Hello world',
-      //     createdAt: new Date(),
-      //     updatedAt: new Date()
-      //   },
-      //   {
-      //     name: 'user1',
-      //     email: 'user1@example.com',
-      //     password: crypto
-      //       .createHash('md5')
-      //       .update('12345678', 'utf8')
-      //       .digest('hex'),
-      //     avatar: null,
-      //     introduction: 'Hello world',
-      //     createdAt: new Date(),
-      //     updatedAt: new Date()
-      //   }
-      // ],
       {}
     )
-    return queryInterface.bulkInsert(
+    queryInterface.bulkInsert(
       'Tweets',
       Array.from({ length: 10 }).map(d => ({
         description: faker.lorem.text(),
@@ -54,6 +29,19 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       })),
+      {}
+    )
+    return queryInterface.bulkInsert(
+      'Replies',
+      [
+        {
+          UserId: 1,
+          TweetId: 1,
+          comment: '好餓',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      ],
       {}
     )
   },

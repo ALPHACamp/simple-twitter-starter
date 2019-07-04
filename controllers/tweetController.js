@@ -6,7 +6,7 @@ const Like = db.Like
 const helpers = require('../_helpers')
 
 const tweetController = {
-  getAllTweets(req, res) {
+  getAllTweets (req, res) {
     Tweet.findAll({
       order: [['createdAt', 'DESC']],
       include: [
@@ -36,7 +36,7 @@ const tweetController = {
         res.status(404).end()
       })
   },
-  postTweet(req, res) {
+  postTweet (req, res) {
     console.log(req.body)
     Tweet.create({
       UserId: helpers.getUser(req).id,
@@ -69,7 +69,7 @@ const tweetController = {
       })
       .catch(error => res.status(404).end())
   },
-  getTweet(req, res) {
+  getTweet (req, res) {
     Tweet.findByPk(req.params.tweetId, {
       include: [
         {
@@ -98,7 +98,7 @@ const tweetController = {
         res.status(404).end()
       })
   },
-  replyTweet(req, res) {
+  replyTweet (req, res) {
     Reply.create({
       UserId: helpers.getUser(req).id,
       TweetId: req.params.tweetId,
@@ -111,7 +111,7 @@ const tweetController = {
         res.status(404).end()
       })
   },
-  likeTweet(req, res) {
+  likeTweet (req, res) {
     console.log('here', req.params)
     Like.create({
       UserId: helpers.getUser(req).id,
@@ -125,7 +125,7 @@ const tweetController = {
         res.status(404).end()
       })
   },
-  unlikeTweet(req, res) {
+  unlikeTweet (req, res) {
     Like.destroy({
       where: {
         UserId: helpers.getUser(req).id,

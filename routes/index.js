@@ -9,10 +9,9 @@ router.get('/logout', userController.logout)
 
 router.use('/users', require('./users'))
 router.use('/tweets', require('./tweets'))
+router.use('/admin', require('./admin'))
 
 router.post('/followships', userController.follow)
 router.delete('/followships/:id', userController.unfollow)
-
-// router.use('/admin', require('./admin'))
 
 module.exports = router

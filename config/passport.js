@@ -48,19 +48,28 @@ passport.deserializeUser((id, cb) => {
           Reply,
           {
             model: User,
+            attributes: { exclude: ['password'] },
             as: 'LikedUsers'
           }
         ]
       },
       {
         model: User,
+        attributes: { exclude: ['password'] },
         as: 'Followings'
       },
-      { model: User, as: 'Followers' },
+      {
+        model: User,
+        attributes: { exclude: ['password'] },
+        as: 'Followers'
+      },
       {
         model: Tweet,
         as: 'LikedTweets',
-        include: User
+        include: {
+          model: User,
+          attributes: { exclude: ['password'] }
+        }
       }
     ]
   }).then(user => {

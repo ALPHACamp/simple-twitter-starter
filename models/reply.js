@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     {}
   )
   Reply.associate = function (models) {
-    Reply.belongsTo(models.User)
-    Reply.belongsTo(models.Tweet)
+    Reply.belongsTo(models.User, { onDelete: 'CASCADE', hooks: true })
+    Reply.belongsTo(models.Tweet, { onDelete: 'CASCADE', hooks: true })
   }
   return Reply
 }

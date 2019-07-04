@@ -7,14 +7,14 @@ const Followship = db.Followship
 const helpers = require('../_helpers')
 
 const userController = {
-  login(req, res) {
+  login (req, res) {
     console.log('gotcha')
     if (helpers.getUser(req)) {
       res.status(200).send(helpers.getUser(req))
     }
     res.status(404).end()
   },
-  register(req, res) {
+  register (req, res) {
     User.findOne({ where: { email: req.body.email } }).then(user => {
       if (user) {
         return res.status(406).end()
@@ -36,7 +36,7 @@ const userController = {
     req.logout()
     res.end()
   },
-  getUser(req, res) {
+  getUser (req, res) {
     User.findByPk(req.params.id, {
       include: [
         {
@@ -45,19 +45,28 @@ const userController = {
             Reply,
             {
               model: User,
+              attributes: { exclude: ['password'] },
               as: 'LikedUsers'
             }
           ]
         },
         {
           model: User,
+          attributes: { exclude: ['password'] },
           as: 'Followings'
         },
-        { model: User, as: 'Followers' },
+        {
+          model: User,
+          attributes: { exclude: ['password'] },
+          as: 'Followers'
+        },
         {
           model: Tweet,
           as: 'LikedTweets',
-          include: User
+          include: {
+            model: User,
+            attributes: { exclude: ['password'] }
+          }
         }
       ]
     })
@@ -69,7 +78,7 @@ const userController = {
       })
   },
 
-  getTopTenUser(req, res) {
+  getTopTenUser (req, res) {
     User.findAll({
       include: [{ model: User, as: 'Followers' }]
     })
@@ -82,7 +91,7 @@ const userController = {
         res.status(404).end()
       })
   },
-  editProfile(req, res) {
+  editProfile (req, res) {
     User.update(req.body, {
       where: {
         id: helpers.getUser(req).id
@@ -96,7 +105,10 @@ const userController = {
         res.status(404).end()
       })
   },
-  follow(req, res) {
+  follow (req, res) {
+    if (req.body.UserId === helpers.getUser(req).id) {
+      res.status(404).end()
+    }
     Followship.create({
       followerId: helpers.getUser(req).id,
       followingId: req.body.UserId
@@ -108,8 +120,7 @@ const userController = {
         res.status(404).end()
       })
   },
-  unfollow(req, res) {
-    console.log(req.params)
+  unfollow (req, res) {
     Followship.destroy({
       where: {
         followerId: helpers.getUser(req).id,
