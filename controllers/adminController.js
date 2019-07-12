@@ -1,10 +1,43 @@
 const db = require('../models')
 const User = db.User
 const Tweet = db.Tweet
+const Reply = db.Reply
 
 const adminController = {
   getAllUser (req, res) {
-    User.findAll()
+    User.findAll({
+      include: [
+        {
+          model: Tweet,
+          include: [
+            Reply,
+            {
+              model: User,
+              attributes: { exclude: ['password'] },
+              as: 'LikedUsers'
+            }
+          ]
+        },
+        {
+          model: User,
+          attributes: { exclude: ['password'] },
+          as: 'Followings'
+        },
+        {
+          model: User,
+          attributes: { exclude: ['password'] },
+          as: 'Followers'
+        },
+        {
+          model: Tweet,
+          as: 'LikedTweets',
+          include: {
+            model: User,
+            attributes: { exclude: ['password'] }
+          }
+        }
+      ]
+    })
       .then(users => {
         res.status(200).send(users)
       })
