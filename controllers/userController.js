@@ -5,6 +5,9 @@ const Tweet = db.Tweet
 const Reply = db.Reply
 const Followship = db.Followship
 const helpers = require('../_helpers')
+const fs = require('fs')
+const imgur = require('imgur')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const userController = {
   login (req, res) {
@@ -91,19 +94,46 @@ const userController = {
         res.status(404).end()
       })
   },
-  editProfile (req, res) {
-    User.update(req.body, {
-      where: {
-        id: helpers.getUser(req).id
-      }
-    })
-      .then(() => {
-        res.status(201).end()
-      })
-      .catch(error => {
+  async editProfile (req, res) {
+    const file = req.file
+    const { name, introduction } = req.body
+    let imgurObject = null
+    if (file) {
+      try {
+        imgur.setClientId(IMGUR_CLIENT_ID)
+        imgurObject = await imgur.uploadFile(file.path)
+      } catch (error) {
         console.log(error)
-        res.status(404).end()
+      }  
+    }
+    return User.findByPk(helpers.getUser(req).id)
+      .then(user => {
+        return user.update({
+          name,
+          introduction,
+          avatar: file ? imgurObject.data.link : null
+        })
+        .then(user => {
+          console.log(user)
+          res.status(200).send(user)
+        })
+        .catch(error => {
+          console.log(error)
+          res.status(404).end()
+        })
       })
+    // User.update(req.body, {
+    //   where: {
+    //     id: helpers.getUser(req).id
+    //   }
+    // })
+    //   .then(() => {
+    //     res.status(201).end()
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //     res.status(404).end()
+    //   })
   },
   follow (req, res) {
     if (req.body.UserId === helpers.getUser(req).id) {

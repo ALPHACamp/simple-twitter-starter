@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const userController = require('../controllers/userController')
+const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
 
 /*
   prefix: "/users"
@@ -8,7 +10,7 @@ const userController = require('../controllers/userController')
 router
   .route('')
   .get(userController.login)
-  .put(userController.editProfile)
+  .put(upload.single('file'), userController.editProfile)
 
 router.get('/top', userController.getTopTenUser)
 
