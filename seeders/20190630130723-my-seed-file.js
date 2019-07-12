@@ -6,19 +6,34 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     queryInterface.bulkInsert(
       'Users',
-      Array.from({ length: 10 }).map((d, index) => ({
-        name: `user${index}`,
-        email: `user${index}@example.com`,
-        password: crypto
-          .createHash('md5')
-          .update('12345678', 'utf8')
-          .digest('hex'),
-        avatar: faker.image.imageUrl(),
-        introduction: faker.lorem.text(),
-        role: 'user',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      })),
+      [
+        ...Array.from({ length: 10 }).map((d, index) => ({
+          name: `user${index}`,
+          email: `user${index}@example.com`,
+          password: crypto
+            .createHash('md5')
+            .update('12345678', 'utf8')
+            .digest('hex'),
+          avatar: faker.image.imageUrl(),
+          introduction: faker.lorem.text(),
+          role: 'user',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        })),
+        {
+          name: `root`,
+          email: `root@example.com`,
+          password: crypto
+            .createHash('md5')
+            .update('12345678', 'utf8')
+            .digest('hex'),
+          avatar: faker.image.imageUrl(),
+          introduction: faker.lorem.text(),
+          role: 'admin',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      ],
       {}
     )
     queryInterface.bulkInsert(
