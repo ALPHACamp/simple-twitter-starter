@@ -30,7 +30,12 @@ const userController = {
             .update(req.body.password, 'utf8')
             .digest('hex')
         }).then(user => {
-          return res.status(201).send(user)
+          req.logIn(user, function(err) {
+            if (err) {
+              res.status(404).end()
+             }
+            return res.status(201).send(user)
+          })
         })
       }
     })
@@ -111,10 +116,9 @@ const userController = {
         return user.update({
           name,
           introduction,
-          avatar: file ? imgurObject.data.link : null
+          avatar: file ? imgurObject.data.link : user.avatar
         })
         .then(user => {
-          console.log(user)
           res.status(200).send(user)
         })
         .catch(error => {
@@ -122,18 +126,6 @@ const userController = {
           res.status(404).end()
         })
       })
-    // User.update(req.body, {
-    //   where: {
-    //     id: helpers.getUser(req).id
-    //   }
-    // })
-    //   .then(() => {
-    //     res.status(201).end()
-    //   })
-    //   .catch(error => {
-    //     console.log(error)
-    //     res.status(404).end()
-    //   })
   },
   follow (req, res) {
     if (req.body.UserId === helpers.getUser(req).id) {
