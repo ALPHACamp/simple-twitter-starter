@@ -11,25 +11,27 @@ const tweetController = {
   getTweets: async (req, res) => {
     const currentUser = req.user
     try {
-      const tweets = await Tweet.findAll({
-        include: [{
-          model: User,
-          attributes: [
-            'name',
-            'id',
-            'avatar',
-          ]
-        }],
+      let tweets = await Tweet.findAll({
+        include: [
+          {
+            model: User,
+            attributes: [
+              'name',
+              'id',
+              'avatar',
+            ]
+          },
+          { model:Like, attributes:['UserId']}
+        ],
         attributes: [
           'id',
           'createdAt',
           'description',
           [Sequelize.literal(customQuery.Like.TweetId), 'LikesCount'],
-          [Sequelize.literal(customQuery.Reply.TweetId), 'RepliesCount']
+          [Sequelize.literal(customQuery.Reply.TweetId), 'RepliesCount'],
         ],
         order: [['createdAt', 'DESC']]
       })
-
       let popularUsers = await User.findAll({
         attributes: [
           'name',
@@ -41,6 +43,10 @@ const tweetController = {
         order: [[Sequelize.literal(customQuery.FollowShip.FollowingId), 'DESC']],
         limit: 10
       })
+      tweets = tweets.map(tweet => ({
+        ...tweet.dataValues,
+        isLiked: tweet.dataValues.Likes.map(like => like.dataValues.UserId).includes(req.user.id)
+      }))
       const popularUsersData = popularUsers.map(user => ({
         ...user.dataValues,
         isFollowing: currentUser.Followings.map(following => following.id).includes(user.id)
@@ -149,7 +155,8 @@ const tweetController = {
               [Sequelize.literal(customQuery.FollowShip.FollowingId), 'FollowerCount'],
               [Sequelize.literal(customQuery.Like.UserId), 'LikeCount']
             ]
-          }
+          },
+          { model: Like, attributes: ['UserId']}
         ],
         attributes: [
           'id',
@@ -164,7 +171,10 @@ const tweetController = {
         return res.status(400).json({ status: 'error', message: 'tweet was not found.' })
       }
       const { User: userData, ...tweetData } = tweet.dataValues
+      const isLiked = tweetData.Likes.map(like => like.dataValues.UserId).includes(req.user.id)
       const isFollowing = req.user.Followings.map(following => following.id).includes(userData.id)
+      
+      tweetData.isLiked = isLiked
       userData.dataValues.isFollowing = isFollowing
       return res.status(200).json({ status: 'success', tweetData, userData, message: 'successfully get tweet and replies.' })
     } catch (error) {
