@@ -83,7 +83,7 @@ module.exports = {
         attributes: ['id', 'name', 'avatar', 'introduction']
       })
       let tweets = await user.getTweets({
-        include: [{model: Like, attributes: ['UserId']}],
+        include: [{ model: Like, attributes: ['UserId'] }],
         attributes: [
           'id',
           'UserId',
@@ -278,7 +278,7 @@ module.exports = {
       // check if user has been followed
       const followshipData = user.Followings.map(followship => ({
         ...followship.dataValues,
-        isFollowed: req.user.Followings.map(data => data.id).includes(followship.id)
+        isFollowing: req.user.Followings.map(data => data.id).includes(followship.id)
       }))
       const isFollowing = req.user.Followings.map(following => following.id).includes(user.id)
       userData.isFollowing = isFollowing
@@ -317,7 +317,7 @@ module.exports = {
       // check if user has been followed
       const followshipData = user.Followers.map(followship => ({
         ...followship.dataValues,
-        isFollowed: req.user.Followings.map(data => data.id).includes(followship.id)
+        isFollowing: req.user.Followings.map(data => data.id).includes(followship.id)
       }))
       const isFollowing = req.user.Followings.map(following => following.id).includes(user.id)
       userData.isFollowing = isFollowing
