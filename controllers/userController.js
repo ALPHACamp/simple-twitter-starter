@@ -324,7 +324,8 @@ module.exports = {
       name: req.user.name,
       email: req.user.email,
       avatar: req.user.avatar,
-      role: req.user.role
+      role: req.user.role,
+      introduction: req.user.introduction
     })
   }
 }
