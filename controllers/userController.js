@@ -82,7 +82,8 @@ module.exports = {
       const user = await User.findByPk(req.params.id, {
         attributes: ['id', 'name', 'avatar', 'introduction']
       })
-      const tweets = await user.getTweets({
+      let tweets = await user.getTweets({
+        include: [{model: Like, attributes: ['UserId']}],
         attributes: [
           'id',
           'UserId',
@@ -104,7 +105,10 @@ module.exports = {
         ...user.dataValues,
         isFollowing: currentUser.Followings.map(following => following.id).includes(user.id)
       }
-
+      tweets = await tweets.map(tweet => ({
+        ...tweet.dataValues,
+        isLiked: tweet.dataValues.Likes.map(like => like.dataValues.UserId).includes(req.user.id)
+      }))
       if (!user) {
         return res.status(400).json({ status: 'error', message: 'cant find the user' })
       }
@@ -214,7 +218,7 @@ module.exports = {
       if (!user) return res.status(404).json({ status: 'error', message: 'No such user' })
 
       // get liked tweets
-      const likes = await Like.findAll({
+      let likes = await Like.findAll({
         where: {
           UserId: req.params.id
         },
@@ -233,6 +237,10 @@ module.exports = {
         ],
         order: [['createdAt', 'DESC']]
       })
+      likes = likes.map(like => ({
+        ...like.dataValues,
+        isLiked: like.dataValues.UserId === req.user.id
+      }))
       const isFollowing = req.user.Followings.map(following => following.id).includes(user.id)
       user.dataValues.isFollowing = isFollowing
       return res.json({ status: 'success', likes, user })
