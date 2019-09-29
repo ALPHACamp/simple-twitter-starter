@@ -162,21 +162,28 @@ const tweetController = {
           'id',
           'UserId',
           'description',
+          'createdAt',
           [Sequelize.literal(customQuery.Like.TweetId), 'LikesCount'],
           [Sequelize.literal(customQuery.Reply.TweetId), 'RepliesCount']
-        ]
+        ],
+        order:[[{ model:Reply}, 'createdAt', 'DESC']]
       })
       // 如果 tweet 不存在
       if (!tweet) {
         return res.status(400).json({ status: 'error', message: 'tweet was not found.' })
       }
-      const { User: userData, ...tweetData } = tweet.dataValues
+      const { User: userData, Replies, ...tweetData } = tweet.dataValues
       const isLiked = tweetData.Likes.map(like => like.dataValues.UserId).includes(req.user.id)
+      const tweetUser = {
+        id: userData.dataValues.id,
+        name: userData.dataValues.name,
+        avatar: userData.dataValues.avatar
+      }
+      tweetData.User = tweetUser
       const isFollowing = req.user.Followings.map(following => following.id).includes(userData.id)
-      
       tweetData.isLiked = isLiked
       userData.dataValues.isFollowing = isFollowing
-      return res.status(200).json({ status: 'success', tweetData, userData, message: 'successfully get tweet and replies.' })
+      return res.status(200).json({ status: 'success', tweetData, userData, Replies, message: 'successfully get tweet and replies.' })
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error })
     }
@@ -192,12 +199,13 @@ const tweetController = {
       const tweet = await Tweet.findByPk(req.params.tweet_id)
       if (!tweet) return res.status(404).json({ status: 'error', message: 'No such tweet' })
       // create new reply to the tweet
-      await Reply.create({
+      const reply = await Reply.create({
         comment: req.body.comment,
         TweetId: tweet_id,
         UserId: req.user.id
       })
-      return res.status(201).json({ status: 'success', tweet_id, message: 'new reply has been successfully created.' })
+      const reply_id = reply.id
+      return res.status(201).json({ status: 'success', tweet_id, reply_id, message: 'new reply has been successfully created.' })
     } catch (error) {
       return res.status(500).json({ status: 'error', message: error })
     }
