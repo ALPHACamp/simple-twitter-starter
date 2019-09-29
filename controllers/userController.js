@@ -226,7 +226,7 @@ module.exports = {
           {
             model: Tweet,
             include: [
-              { model: User, attributes: ['name', 'avatar'] }
+              { model: User, attributes: ['name', 'avatar', 'id'] }
             ],
             attributes: [
               'createdAt', 'id', 'createdAt', 'description',
