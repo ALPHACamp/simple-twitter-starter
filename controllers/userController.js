@@ -229,7 +229,7 @@ module.exports = {
               { model: User, attributes: ['name', 'avatar'] }
             ],
             attributes: [
-              'createdAt', 'id', 'createdAt',
+              'createdAt', 'id', 'createdAt', 'description',
               [Sequelize.literal(customQuery.Like.TweetId), 'LikesCount'],
               [Sequelize.literal(customQuery.Reply.TweetId), 'RepliesCount']
             ]
