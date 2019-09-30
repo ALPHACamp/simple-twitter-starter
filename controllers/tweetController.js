@@ -25,6 +25,7 @@ const tweetController = {
         ],
         attributes: [
           'id',
+          'UserId',
           'createdAt',
           'description',
           [Sequelize.literal(customQuery.Like.TweetId), 'LikesCount'],
