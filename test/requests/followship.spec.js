@@ -30,7 +30,7 @@ describe('# followship request', () => {
           .send('id=1')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
+          .end(function(err, res) {            
             if (err) return done(err);
             db.User.findByPk(1,{include: [
                 { model: db.User, as: 'Followers' },

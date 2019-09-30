@@ -1,0 +1,65 @@
+const db = require('../models');
+
+const { Tweet, User, Reply } = db;
+
+const adminController = {
+  getTweets: async (req, res) => {
+    const tweets = await Tweet.findAll({
+      include: [
+        User,
+        Reply,
+        { model: User, as: 'LikedUsers' },
+      ],
+    });
+
+    const shortTweets = tweets.map((tweet) => {
+      const dLength = tweet.dataValues.description.length;
+      const description = dLength < 50
+        ? tweet.dataValues.description
+        : `${tweet.dataValues.description.substring(0, 50)} ...`;
+      return {
+        ...tweet.dataValues,
+        description,
+        createdAt: tweet.createdAt.toDateString(),
+      };
+    });
+
+    return res.render('admin/tweets', { tweets: shortTweets });
+  },
+
+  deleteTweet: async (req, res) => {
+    const tweet = await Tweet.findByPk(req.params.id);
+    await tweet.destroy();
+    return res.redirect('/admin/tweets');
+  },
+
+  getUsers: async (req, res) => {
+    const userData = await User.findAll(
+      {
+        include: [
+          { model: User, as: 'Followers' },
+          { model: User, as: 'Followings' },
+          {
+            model: Tweet,
+            include: [
+              { model: User, as: 'LikedUsers' },
+            ],
+          },
+        ],
+      },
+    );
+    const users = userData
+      .map(user => ({
+        ...user.dataValues,
+        followingCount: user.dataValues.Followings.length,
+        followerCount: user.dataValues.Followers.length,
+        tweetCount: user.dataValues.Tweets.length,
+        tweetLikeCount: user.dataValues.Tweets
+          .reduce((acc, tweet) => acc + tweet.LikedUsers.length, 0),
+      }))
+      .sort((a, b) => b.tweetCount - a.tweetCount);
+    return res.render('admin/users', { users });
+  },
+};
+
+module.exports = adminController;

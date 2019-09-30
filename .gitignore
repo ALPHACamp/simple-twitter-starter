@@ -1,6 +1,10 @@
 .DS_Store
 *.DS_Store
 
+temp/
+upload/
+yarn.lock
+
 # Logs
 logs
 *.log
@@ -85,3 +89,6 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+#VSCode Settings
+.vscode/

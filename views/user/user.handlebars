@@ -1,0 +1,71 @@
+<div class="card mb-3">
+  <div class="row no-gutters">
+    <div class="col-md-4 mt-2">
+      <img src="{{profile.avatar}}" class="card-img" alt="avatar" style="width: 175px;margin-bottom: 5px;">
+
+      <div class="card-body">
+        <h5 class="card-title" style="color:#2E8B57;">{{profile.name}}</h5>
+        <p class="card-text" style="color:rgb(46, 113, 139);">{{profile.introduction}}</p>
+
+        <a href="/users/{{profile.id}}/tweets">
+          <h6 class="tweet" style="color: black;">Tweet {{tweetCount}}</h6>
+        </a>
+        <a href="/users/{{profile.id}}/followings">
+          <h6 class="following" style="color: black;">Following {{FollowingCount}}</h6>
+        </a>
+        <a href="/users/{{profile.id}}/followers">
+          <h6 class="follower" style="color: black;">Follower {{FollowerCount}}</h6>
+        </a>
+        <a href="/users/{{profile.id}}/likes">
+          <h6 class="like" style="color: black;">Like {{LikedCount}}</h6>
+        </a>
+        {{#ifMatch profile.id user.id}}
+        <a href="/users/{{profile.id}}/edit" class="btn btn-primary mt-2">Edit Profile</a>
+        {{else}}
+        {{#if isFollowed }}
+        <form action="/followships/{{profile.id}}?_method=DELETE" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-primary">Unfollow</button>
+        </form>
+        {{else}}
+        <form action="/followships" method="POST" style="display: contents;">
+          <input type="hidden" name="id" value="{{profile.id}}"/>
+          <button type="submit" class="btn btn-primary">Follow</button>
+        </form>
+        {{/if}}
+        {{/ifMatch}}
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      {{#each tweets}}
+      <div class="card mt-2" style="border: solid 1px gray">
+        <div class="row">
+          <div class="col-md-2">
+            <img src="{{this.User.avatar}}" class="card-img mt-4 ml-2" alt="avatar"
+              style="width: 100px;margin-bottom: 25px;">
+          </div>
+
+          <div class="col-md-10">
+            <div class="tweets mt-3 ml-2">
+              <a href="/users/{{this.User.id}}/tweets">{{this.User.name}}, {{moment this.createdAt}}</a>
+              <p>{{this.description}}</p>
+              <div class="row">
+                <a href="/tweets/{{this.id}}/replies" class="btn btn-link">Reply({{this.Replies.length}})</a>
+                {{#if isLiked }}
+                <form action="/tweets/{{this.id}}/unlike" method="POST">
+                  <button type="submit" class="btn btn-link" style="color:red;">unlike({{this.Likes.length}})</button>
+                </form>
+                {{else}}
+                <form action="/tweets/{{this.id}}/like" method="POST">
+                  <button type="submit" class="btn btn-link" style="color:red;">like({{this.Likes.length}})</button>
+                </form>
+                {{/if}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
