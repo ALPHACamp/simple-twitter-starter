@@ -34,7 +34,7 @@ module.exports = {
     }], {})
 
     return queryInterface.bulkInsert('Tweets',
-      Array.from({ length: 20 }).map(d =>
+      Array.from({ length: 50 }).map(d =>
         ({
           UserId: Math.floor(Math.random() * 3) + 1,
           description: faker.lorem.text(),
