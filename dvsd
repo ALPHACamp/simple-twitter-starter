@@ -1,0 +1,75 @@
+[33mcommit 5443c5375ea2618569d110c592e9e48dde412cff[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mseedData[m[33m)[m
+Merge: 3618583 6475b49
+Author: Ignatius Fan <fan01856472@gmail.com>
+Date:   Wed Nov 27 17:48:06 2019 +0800
+
+    Merge pull request #1 from IgnacioFan/project_construction
+    
+    Project construction
+
+[33mcommit 6475b496b72b388d4030ad7bf67476e55907bc52[m[33m ([m[1;31morigin/project_construction[m[33m)[m
+Author: Ignatius Fan <fan01856472@gmail.com>
+Date:   Tue Nov 26 22:25:05 2019 +0800
+
+    set model attributes and relation
+
+[33mcommit fcfa5c570e782663039aa716d31918ea8db7e623[m
+Author: Ignatius Fan <fan01856472@gmail.com>
+Date:   Tue Nov 26 20:38:11 2019 +0800
+
+    init
+
+[33mcommit 361858348996ad0a3cd492305a34ac8d7f13e2a2[m
+Author: WeiYuan <v123582@gmail.com>
+Date:   Thu Sep 26 21:49:21 2019 +0800
+
+    Delete yarn.lock
+
+[33mcommit 3501652d8a43299d91d7e0a8f8f1ce43a7c30cac[m
+Merge: 898fa93 230dd75
+Author: v123582 <v123582@gmail.com>
+Date:   Sun Jul 7 23:38:23 2019 +0800
+
+    merged
+
+[33mcommit 898fa934442b32c896b7312dd41a221e23f27999[m
+Author: v123582 <v123582@gmail.com>
+Date:   Sun Jul 7 23:36:26 2019 +0800
+
+    fix spec naming
+
+[33mcommit 230dd75d3dcd9cdecdf00d095e72e43c6a483eab[m
+Author: Ellen Lee <leechinghui.tw@gmail.com>
+Date:   Tue Jun 25 21:13:41 2019 +0800
+
+    fix typo
+
+[33mcommit fb664c7020d19476ced0d4d0a86c49058187c5ce[m
+Author: v123582 <v123582@gmail.com>
+Date:   Mon Jun 24 01:24:57 2019 +0800
+
+    update
+
+[33mcommit de4a420f9d4e0e389de10de3b4fe9b6a4fa5a557[m
+Author: v123582 <v123582@gmail.com>
+Date:   Mon Jun 24 01:08:20 2019 +0800
+
+    update migrations
+
+[33mcommit e755bb575c262625d43d88c43fb5ecd13fe81da0[m
+Author: v123582 <v123582@gmail.com>
+Date:   Sat Jun 22 22:25:44 2019 +0800
+
+    refactor
+
+[33mcommit f728fb9d877d71eb61122c7bc1689fe5889419b6[m
+Author: v123582 <v123582@gmail.com>
+Date:   Fri Jun 21 23:26:52 2019 +0800
+
+    refactor
+
+[33mcommit 63871826f87a4873ae727f4bae92b6a321769272[m
+Author: v123582 <v123582@gmail.com>
+Date:   Tue Jun 18 21:34:43 2019 +0800
+
+    first commit
