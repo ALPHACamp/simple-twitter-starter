@@ -1,5 +1,6 @@
 const tweetController = require('../controllers/tweetController.js')
 const userController = require('../controllers/userController.js')
+const replyController = require('../controllers/replyController.js')
 const adminController = require('../controllers/admin/adminController.js')
 
 module.exports = (app, passport) => {
@@ -18,10 +19,10 @@ module.exports = (app, passport) => {
     res.redirect('/signin')
   }
 
+
+  // Home routes
   app.get('/', (req, res) => { res.redirect('/tweets') })
-
   app.get('/tweets', authenticated, tweetController.getTweets)
-
 
   // Sign up.in.out routes 
   app.get('/signup', userController.signUpPage)
@@ -36,5 +37,9 @@ module.exports = (app, passport) => {
 
   // tweet routes
   app.post('/tweets', authenticatedAdmin, tweetController.postTweet)
+
+  // reply routes
+  app.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
+
 
 }
