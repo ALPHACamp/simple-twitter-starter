@@ -1,0 +1,35 @@
+<div>
+  <ul class="nav">
+    <li class="nav-item"><a href="tweets" class="nav-link">tweet</a></li>
+    <li class="nav-item"><a href="users" class="nav-link">user</a></li>
+  </ul>
+</div>
+<!-- Main Content -->
+<div>
+  <h1>User Management</h1>
+</div>
+<div>
+  <table class="table">
+    <thead>
+      <tr>
+        <td>#</td>
+        <td>email</td>
+        <td>name</td>
+        <td>role</td>
+        <td colspan="2"></td>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each users }}
+      <tr>
+        <td>{{this.id}}</td>
+        <td>{{this.email}}</td>
+        <td>{{this.name}}</td>
+        <td>{{this.role}}</td>
+        <td><a href="#">edit</a></td>
+        <td><a href="#">delete</a></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
