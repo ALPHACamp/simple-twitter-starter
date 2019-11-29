@@ -18,7 +18,7 @@
       </ul>
       <div>
         {{#ifCond user.role 'Admin'}}
-        <a href="/admin" style="color: white;margin-right: 10px;">Admin </a>
+        <a href="/admin/tweets" style="color: white;margin-right: 10px;">Admin </a>
         {{/ifCond}}
         {{#if user}}
         <span style="color: white;margin-right: 10px;">Hi, {{user.email}}</span>
