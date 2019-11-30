@@ -1,3 +1,54 @@
-<div>
-  <h1>All the tweets</h1>
+<div class="row">
+  <div class="col-md-7">
+    <div class="row">
+
+      <div class="form-group col-md-10 mx-auto">
+        <textarea class="form-control" rows="5" placeholder="What's on your mind?"></textarea>
+        <form action="/tweets" method="POST">
+          <button type="submit" class="btn btn-primary float-right mt-3">Tweet</button>
+        </form>
+      </div>
+
+      {{#each tweets}}
+      <div class="card col-md-10 shadow-sm mx-auto mt-3">
+        <div class="row">
+          <div class="col-4 text-center d-flex">
+            <img class="rounded mx-auto my-auto" width="120px" height="120px" src="#">
+          </div>
+          <div class="col-8 card-body">
+            <a href="/tweets/{{this.id}}">
+              <h5 class="card-text">@{{this.User.name}}, {{this.createdAt}}</h5>
+            </a>
+            <p class="card-text">{{this.description}}</p>
+            <h5><a href="#">Reply</a> <a href="#">Like</a></h5>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div>
+      <h2>Popular</h2>
+    </div>
+    <div class="row">
+      {{#each users}}
+      <div class="card col-md-10 shadow-sm mx-auto mt-3">
+        <div class="row">
+          <div class="col-5 text-center d-flex">
+            <img class="rounded mx-auto my-auto" width="100px" height="100px">
+          </div>
+          <div class="col-7 card-body">
+            <a href="/users/{{this.id}}">
+              <h5 class="card-text">@{{this.name}}</h5>
+            </a>
+            <p class="card-text">{{this.introduction}}</p>
+            <p><a href="#" class="btn btn-primary">Unfollow</a></p>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+
 </div>
