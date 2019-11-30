@@ -19,8 +19,10 @@ module.exports = (app, passport) => {
   }
 
   app.get('/', (req, res) => { res.redirect('/tweets') })
-
+  // tweet routes
   app.get('/tweets', authenticated, tweetController.getTweets)
+  app.post('/tweets', authenticated, tweetController.postTweet)
+
 
   // Sign up.in.out routes 
   app.get('/signup', userController.signUpPage)
@@ -29,9 +31,10 @@ module.exports = (app, passport) => {
   app.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
   app.get('/logout', userController.logout)
 
-
   // admin routes
   app.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
   app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
+
+
 
 }

@@ -1,14 +1,14 @@
 <div class="row">
   <div class="col-md-7">
     <div class="row">
-
-      <div class="form-group col-md-10 mx-auto">
-        <textarea class="form-control" rows="5" placeholder="What's on your mind?"></textarea>
-        <form action="/tweets" method="POST">
+      <form action="/tweets" method="POST" class="form-group col-md-10 mx-auto">
+        <div>
+          <textarea class="form-control" rows="5" name="description" placeholder="What's on your mind?"></textarea>
+        </div>
+        <div>
           <button type="submit" class="btn btn-primary float-right mt-3">Tweet</button>
-        </form>
-      </div>
-
+        </div>
+      </form>
       {{#each tweets}}
       <div class="card col-md-10 shadow-sm mx-auto mt-3">
         <div class="row">
