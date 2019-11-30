@@ -1,6 +1,8 @@
 const db = require('../models')
 const Reply = db.Reply
-const helpers = require('./_helpers')
+const User = db.User
+const Tweet = db.Tweet
+const helpers = require('../_helpers')
 
 let replyController = {
   postReply: (req, res) => {
@@ -12,6 +14,17 @@ let replyController = {
       .then((reply) => {
         res.redirect(`/tweets/${req.body.tweetId}/replies`)
       })
+  },
+  getReply: (req, res) => {
+    return Tweet.findByPk(req.params.tweet_id, {
+      include: [
+        { model: Reply, include: [User] }
+      ]
+    }).then(tweet => {
+      return res.render('reply', {
+        tweet: tweet
+      })
+    })
   }
 }
 module.exports = replyController

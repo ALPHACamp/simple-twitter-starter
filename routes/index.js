@@ -2,17 +2,18 @@ const tweetController = require('../controllers/tweetController.js')
 const userController = require('../controllers/userController.js')
 const replyController = require('../controllers/replyController.js')
 const adminController = require('../controllers/admin/adminController.js')
+const helpers = require('../_helpers')
 
 module.exports = (app, passport) => {
 
   const authenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
+    if (helpers.ensureAuthenticated(req)) {
       return next()
     }
     res.redirect('/signin')
   }
   const authenticatedAdmin = (req, res, next) => {
-    if (req.isAuthenticated()) {
+    if (helpers.ensureAuthenticated(req)) {
       if (req.user.role === 'Admin') { return next() }
       return res.redirect('/')
     }
@@ -39,7 +40,8 @@ module.exports = (app, passport) => {
   app.post('/tweets', authenticatedAdmin, tweetController.postTweet)
 
   // reply routes
-  app.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
+  app.get('/tweets/:tweet_id/replies', replyController.getReply)
+  app.post('/tweets/:tweet_id/replies', replyController.postReply)
 
 
 }
