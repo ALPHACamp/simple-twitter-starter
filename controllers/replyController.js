@@ -7,14 +7,19 @@ const helpers = require('../_helpers')
 
 let replyController = {
   postReply: (req, res) => {
-    return Reply.create({
-      comment: req.body.comment,
-      TweetId: req.params.tweet_id,
-      UserId: helpers.getUser(req).id
-    })
-      .then((reply) => {
-        res.redirect(`/tweets/${req.body.tweetId}/replies`)
+    if (!req.body.comment) {
+      req.flash('error_messages', 'comment didn\'t exist')
+      return res.redirect('back')
+    } else {
+      return Reply.create({
+        comment: req.body.comment,
+        TweetId: req.params.tweet_id,
+        UserId: helpers.getUser(req).id
       })
+        .then((reply) => {
+          res.redirect(`/tweets/${req.body.tweetId}/replies`)
+        })
+    }
   },
   getReply: (req, res) => {
     return Tweet.findByPk(req.params.tweet_id, {
