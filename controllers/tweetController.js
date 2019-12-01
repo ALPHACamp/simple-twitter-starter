@@ -14,7 +14,7 @@ const tweetController = {
       User.findAll({ limit: 10 }).then(users => {
         users = users.map(user => ({
           ...user.dataValues,
-          introduction: user.dataValues.introduction.substring(0, 140),
+          introduction: user.dataValues.introduction != null ? user.dataValues.introduction.substring(0, 140) : null,
         }))
         return res.render('tweets', { users: users, tweets: tweets })
       })
