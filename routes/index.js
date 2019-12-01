@@ -23,7 +23,10 @@ module.exports = (app, passport) => {
 
   // Home routes
   app.get('/', (req, res) => { res.redirect('/tweets') })
+
+  // tweet routes
   app.get('/tweets', authenticated, tweetController.getTweets)
+  app.post('/tweets', authenticated, tweetController.postTweet)
 
   // Sign up.in.out routes 
   app.get('/signup', userController.signUpPage)
@@ -36,8 +39,7 @@ module.exports = (app, passport) => {
   app.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
   app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
 
-  // tweet routes
-  app.post('/tweets', authenticatedAdmin, tweetController.postTweet)
+
 
   // reply routes
   app.get('/tweets/:tweet_id/replies', authenticated, replyController.getReply)
