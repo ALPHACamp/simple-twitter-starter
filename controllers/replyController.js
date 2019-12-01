@@ -2,13 +2,14 @@ const db = require('../models')
 const Reply = db.Reply
 const User = db.User
 const Tweet = db.Tweet
+const Like = db.Like
 const helpers = require('../_helpers')
 
 let replyController = {
   postReply: (req, res) => {
     return Reply.create({
-      comment: req.body.text,
-      TweetId: req.body.tweetId,
+      comment: req.body.comment,
+      TweetId: req.params.tweet_id,
       UserId: helpers.getUser(req).id
     })
       .then((reply) => {
@@ -18,6 +19,13 @@ let replyController = {
   getReply: (req, res) => {
     return Tweet.findByPk(req.params.tweet_id, {
       include: [
+        {
+          model: User, include: [
+            Like,
+            { model: User, as: 'Followers' },
+            { model: User, as: 'Followings' }
+          ]
+        },
         { model: Reply, include: [User] }
       ]
     }).then(tweet => {
