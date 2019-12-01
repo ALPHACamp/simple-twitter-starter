@@ -49,19 +49,26 @@ const userController = {
   },
 
   getUser: (req, res) => {
-    return User.findByPk(req.params.id).then(user => {
-      Tweet.findAll({ where: { UserId: user.id }, order: [['updatedAt', 'DESC']] }).then(tweets => {
-        tweets = tweets.map((tweet) => ({
-          ...tweet.dataValues,
-          description: tweet.dataValues.description.substring(0, 140),
-          createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
-          userName: user.name,
-        }))
-        //return res.json({ user: user, tweet: tweet })
-        return res.render('user', { user: user, tweets: tweets, totalNums: tweets.length })
+    if (Number(req.params.id) === Number(req.user.id)) {
+      //console.log('the same')
+      return res.redirect('/tweets')
+    } else {
+      User.findByPk(req.params.id).then(user => {
+        Tweet.findAll({ where: { UserId: user.id }, order: [['updatedAt', 'DESC']] }).then(tweets => {
+          tweets = tweets.map((tweet) => ({
+            ...tweet.dataValues,
+            description: tweet.dataValues.description.substring(0, 140),
+            createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
+            userName: user.name,
+          }))
+          //return res.json({ user: user, tweet: tweet })
+          return res.render('user', { user: user, tweets: tweets, totalNums: tweets.length })
+        })
       })
-    })
+    }
   }
+
+
 
 }
 
