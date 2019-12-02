@@ -20,11 +20,9 @@ module.exports = (app, passport) => {
     res.redirect('/signin')
   }
 
-
   // Home routes
   app.get('/', (req, res) => { res.redirect('/tweets') })
 
-  // tweet routes
   app.get('/tweets', authenticated, tweetController.getTweets)
   app.post('/tweets', authenticated, tweetController.postTweet)
 
