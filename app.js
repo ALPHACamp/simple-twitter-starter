@@ -9,7 +9,7 @@ const passport = require('./config/passport')
 
 
 const app = express()
-const port = 3010
+const port = 3000
 
 app.engine('handlebars', handlebars({
   defaultLayout: 'main',
@@ -25,7 +25,7 @@ app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-  res.locals.user = req.user
+  res.locals.user = helpers.getUser(req)
   next()
 })
 // use helpers.getUser(req) to replace req.user
