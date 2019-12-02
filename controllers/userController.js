@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt-nodejs')
+const strftime = require('strftime')
 const db = require('../models')
 const User = db.User
+const Tweet = db.Tweet
 
 const userController = {
   signUpPage: (req, res) => {
@@ -44,7 +46,30 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+
+  getUser: (req, res) => {
+    if (Number(req.params.id) === Number(req.user.id)) {
+      //console.log('the same')
+      return res.redirect('/tweets')
+    } else {
+      User.findByPk(req.params.id).then(currentUser => {
+        Tweet.findAll({ where: { UserId: currentUser.id }, order: [['updatedAt', 'DESC']] }).then(tweets => {
+          tweets = tweets.map((tweet) => ({
+            ...tweet.dataValues,
+            description: tweet.dataValues.description.substring(0, 140),
+            createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
+            userName: currentUser.name,
+          }))
+          //return res.json({ user: user, tweet: tweet })
+          return res.render('user', { currentUser: currentUser, tweets: tweets, totalNums: tweets.length })
+        })
+      })
+    }
   }
+
+
+
 }
 
 module.exports = userController
