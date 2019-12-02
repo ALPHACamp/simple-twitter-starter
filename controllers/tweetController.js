@@ -1,7 +1,9 @@
 const strftime = require('strftime')
+const helpers = require('../_helpers')
 const db = require('../models')
 const User = db.User
 const Tweet = db.Tweet
+const Followship = db.Followship
 
 const tweetController = {
   getTweets: (req, res) => {
@@ -11,13 +13,20 @@ const tweetController = {
         description: tweet.dataValues.description.substring(0, 140),
         createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt)
       }))
-      User.findAll({ limit: 10 }).then(users => {
+      User.findAll({
+        include: [
+          { model: User, as: 'Followers' }
+        ]
+      }).then(users => {
         users = users.map(user => ({
           ...user.dataValues,
-          introduction: user.dataValues.introduction.substring(0, 100)
+          introduction: user.dataValues.introduction.substring(0, 100),
+          FollowCount: user.Followers.length,
+          isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(user.id)
         }))
+        users = users.sort((a, b) => b.FollowerCount - a.FollowerCount).slice(0, 10)
         return res.render('tweets', { users: users, tweets: tweets })
-      })
+      }).catch(console.log(err))
     })
   },
 

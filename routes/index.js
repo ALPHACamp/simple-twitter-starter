@@ -39,11 +39,8 @@ module.exports = (app, passport) => {
   app.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
   app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
 
-
-
   // reply routes
   app.get('/tweets/:tweet_id/replies', authenticated, replyController.getReply)
   app.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
-
 
 }
