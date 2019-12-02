@@ -26,7 +26,7 @@ const tweetController = {
         }))
         users = users.sort((a, b) => b.FollowerCount - a.FollowerCount).slice(0, 10)
         return res.render('tweets', { users: users, tweets: tweets })
-      }).catch(console.log(err))
+      })
     })
   },
 
