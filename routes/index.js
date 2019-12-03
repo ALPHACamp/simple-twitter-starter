@@ -1,6 +1,8 @@
 const tweetController = require('../controllers/tweetController.js')
 const userController = require('../controllers/userController.js')
 const adminController = require('../controllers/admin/adminController.js')
+const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
 
 module.exports = (app, passport) => {
 
@@ -38,5 +40,5 @@ module.exports = (app, passport) => {
   // users routes
   app.get('/users/:id/tweets', authenticatedAdmin, userController.getUser)
   app.get('/users/:id/edit', authenticatedAdmin, userController.editUser)
-
+  app.put('/users/:id', authenticatedAdmin, upload.single('image'), userController.putUser)
 }

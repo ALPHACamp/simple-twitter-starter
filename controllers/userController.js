@@ -1,4 +1,7 @@
 const strftime = require('strftime')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+const imgur = require('imgur-node-api')
+const fs = require('fs')
 const bcrypt = require('bcrypt-nodejs')
 const db = require('../models')
 const User = db.User
@@ -95,6 +98,43 @@ const userController = {
         return res.redirect('back')
       }
     })
+  },
+
+  putUser: (req, res) => {
+    const { file } = req
+    const authUser = req.user.id
+    if (authUser !== Number(req.params.id)) {
+      req.flash('error_messages', `You are not authorized to access other user's profile`)
+      return res.redirect(`/users/${req.params.id}`)
+    }
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID);
+      imgur.upload(file.path, (err, img) => {
+        return User.findByPk(req.params.id)
+          .then((user) => {
+            user.update({
+                name: req.body.name,
+                avatar: file ? img.data.link : user.avatar,
+              })
+              .then((user) => {
+                req.flash('success_messages', 'User was successfully to update')
+                return res.redirect(`/users/${req.params.id}/edit`)
+              })
+          })
+      })
+    } else {
+      return User.findByPk(req.params.id)
+        .then((user) => {
+          user.update({
+              name: req.body.name,
+              avatar: user.avatar,
+            })
+            .then((user) => {
+              req.flash('success_messages', 'User was successfully to update')
+              return res.redirect(`/users/${req.params.id}/edit`)
+            })
+        })
+    }
   }
 
 }
