@@ -11,7 +11,6 @@
 </head>
 
 <body>
-
   <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
     <a class="navbar-brand" href="/">Simple Twitter</a>
     <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
@@ -19,32 +18,32 @@
       </ul>
       <div>
         {{#ifCond user.role 'Admin'}}
-        <a href="/admin/tweets" style="color: white;margin-right: 10px;">Admin </a>
+          <a href="/admin/tweets" style="color: white;margin-right: 10px;">Admin </a>
         {{/ifCond}}
         {{#if user}}
-        <span style="color: white;margin-right: 10px;">Hi, {{user.email}}</span>
-
-        <a href="/logout"><button class="btn btn-outline-success my-2 my-sm-0">LogOut</button></a>
+          <span style="color: white;margin-right: 10px;">Hi, {{user.email}}</span>
+          <a href="/users/1/tweets" style="color: white;margin-right: 10px;">
+            <img class="rounded mx-auto my-auto" height="100%" src="#">
+          </a>
+          <a href="/logout"><button class="btn btn-outline-success my-2 my-sm-0">LogOut</button></a>
         {{/if}}
       </div>
     </div>
   </nav>
   <br />
-
   <main role="main">
     <div class="py-5 bg-light">
       <div class="container">
         {{#if success_messages}}
-        <div class="alert alert-success" role="alert" style="margin: 30px 0 ;">
-          {{success_messages}}
-        </div>
+          <div class="alert alert-success" role="alert" style="margin: 30px 0 ;">
+            {{success_messages}}
+          </div>
         {{/if}}
         {{#if error_messages}}
-        <div class="alert alert-danger" role="alert" style="margin: 30px 0 ;">
-          {{error_messages}}
-        </div>
+          <div class="alert alert-danger" role="alert" style="margin: 30px 0 ;">
+            {{error_messages}}
+          </div>
         {{/if}}
-
         {{{body}}}
       </div>
     </div>
