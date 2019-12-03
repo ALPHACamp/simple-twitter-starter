@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-4" style="background: skyblue;">
+  <div class="col-md-4">
     <div class="row">
       <div class="col-md-10 mx-auto">
         <div class="mt-3 text-center d-flex">
@@ -13,23 +13,24 @@
       </div>
       <div class="col-md-10 mx-auto mt-3">
         <h4>Tweets <a href="/users/{{currentUser.id}}" class="badge badge-secondary">{{totalNums}}</a></h4>
-        <h4>Following <a href="/users/{{currentUser.id}}/followings" class="badge badge-secondary">{{totalNums}}</a>
+        <h4>Following <a href="/users/{{currentUser.id}}/followings" class="badge badge-secondary">{{FollowingNums}}</a>
         </h4>
-        <h4>Follower <a href="/users/{{currentUser.id}}/followers" class="badge badge-secondary">{{totalNums}}</a></h4>
-        <h4>Like <a href="/users/{{currentUser.id}}/likes" class="badge badge-secondary">{{totalNums}}</a></h4>
+        <h4>Follower <a href="/users/{{currentUser.id}}/followers" class="badge badge-secondary">{{FollowerNums}}</a>
+        </h4>
+        <h4>Like <a href="/users/{{currentUser.id}}/likes" class="badge badge-secondary">{{LikeNums}}</a></h4>
         <div class="mt-3">
           <button type="button" class="btn btn-primary btn-lg btn-block">Follow</button>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-md-8" style="background: lightgray;">
+  <div class="col-md-8">
     <div class="row">
       <div class="col-md-11 mx-auto">
         {{#each tweets}}
         <div class="card shadow-sm mx-auto mt-3">
           <div class="row">
-            <div class="col-3 text-center d-flex" style="background: burlywood;">
+            <div class="col-3 text-center d-flex">
               <img class="rounded mx-auto my-auto" width="120px" height="120px" src="#">
             </div>
             <div class="col-9 card-body">
@@ -39,10 +40,12 @@
               <p class="card-text">{{this.description}}</p>
               <ul class="list-inline">
                 <li class="list-inline-item">
-                  <a href="#" class="btn btn-primary">Reply <span class="badge badge-light">2</span></a>
+                  <a href="/tweets/{{this.id}}/replies" class="btn btn-primary">Reply <span
+                      class="badge badge-light">{{this.replyNums}}</span></a>
                 </li>
                 <li class="list-inline-item">
-                  <a href="#" class="btn btn-danger">Like <span class="badge badge-light">2</span></a>
+                  <a href="/tweets/{{this.id}}/likes" class="btn btn-danger">Like <span
+                      class="badge badge-light">{{this.likeNums}}</span></a>
                 </li>
               </ul>
             </div>
