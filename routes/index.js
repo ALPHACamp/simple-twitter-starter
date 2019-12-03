@@ -41,4 +41,10 @@ module.exports = (app, passport) => {
   app.get('/tweets/:tweet_id/replies', authenticated, replyController.getReply)
   app.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
 
+  // followship routes
+  app.post('/followships/:followingId', authenticated, userController.addFollowing)
+  app.delete('/followships/:followingId', authenticated, userController.removeFollowing)
+  app.get('/users/:id/followings', userController.getFollowings)
+
+
 }
