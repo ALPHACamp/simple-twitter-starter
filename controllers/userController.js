@@ -84,6 +84,17 @@ const userController = {
           })
         })
       })
+  },
+
+  editUser: (req, res) => {
+    User.findByPk(req.params.id).then(user => {
+      if (req.user.id === user.id) {
+        return res.render('editUser', { user: user })
+      } else {
+        req.flash('error_messages', `You are not authorized to access other user's profile`)
+        return res.redirect('back')
+      }
+    })
   }
 
 }

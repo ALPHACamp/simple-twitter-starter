@@ -37,5 +37,6 @@ module.exports = (app, passport) => {
 
   // users routes
   app.get('/users/:id/tweets', authenticatedAdmin, userController.getUser)
+  app.get('/users/:id/edit', authenticatedAdmin, userController.editUser)
 
 }
