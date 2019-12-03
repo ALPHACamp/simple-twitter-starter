@@ -3,6 +3,10 @@ const strftime = require('strftime')
 const db = require('../models')
 const User = db.User
 const Tweet = db.Tweet
+const Like = db.Like
+const Reply = db.Reply
+const Followship = db.Followship
+
 
 const userController = {
   signUpPage: (req, res) => {
@@ -53,17 +57,47 @@ const userController = {
       //console.log('the same')
       return res.redirect('/tweets')
     } else {
-      User.findByPk(req.params.id).then(currentUser => {
-        Tweet.findAll({ where: { UserId: currentUser.id }, order: [['updatedAt', 'DESC']] }).then(tweets => {
-          tweets = tweets.map((tweet) => ({
-            ...tweet.dataValues,
-            description: tweet.dataValues.description.substring(0, 140),
-            createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
-            userName: currentUser.name,
-          }))
-          //return res.json({ user: user, tweet: tweet })
-          return res.render('user', { currentUser: currentUser, tweets: tweets, totalNums: tweets.length })
-        })
+      User.findByPk(req.params.id, {
+        include:
+          [
+            Like,
+            { model: User, as: 'Followers' },
+            { model: User, as: 'Followings' }
+          ]
+      }).then(currentUser => {
+        Tweet.findAll(
+          {
+            where: { UserId: currentUser.id },
+            order: [['updatedAt', 'DESC']],
+            include: [Like, Reply]
+          }).then(tweets => {
+            tweets = tweets.map((tweet) => ({
+              ...tweet.dataValues,
+              description: tweet.dataValues.description.substring(0, 140),
+              createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
+              userName: currentUser.name,
+              replyNums: tweet.Replies.length,
+              likeNums: tweet.Likes.length
+            }))
+            //return res.json({
+            //  currentUser: currentUser,
+            //  tweets: tweets,
+            //  totalNums: tweets.length,
+            //  LikeNums: currentUser.Likes.length,
+            //  FollowerNums: currentUser.Followers.length,
+            //  FollowingNums: currentUser.Followings.length,
+            //})
+
+            return res.render('user', {
+              currentUser: currentUser,
+              tweets: tweets,
+              totalNums: tweets.length,
+              LikeNums: currentUser.Likes.length,
+              FollowerNums: currentUser.Followers.length,
+              FollowingNums: currentUser.Followings.length,
+            })
+          })
+
       })
     }
   }
