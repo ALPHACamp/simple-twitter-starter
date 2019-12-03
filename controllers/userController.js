@@ -7,6 +7,7 @@ const Like = db.Like
 const Reply = db.Reply
 const Followship = db.Followship
 
+
 const userController = {
   signUpPage: (req, res) => {
     return res.render('signup')
@@ -96,6 +97,7 @@ const userController = {
               FollowingNums: currentUser.Followings.length,
             })
           })
+
       })
     }
   }

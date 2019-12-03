@@ -29,6 +29,10 @@ module.exports = (app, passport) => {
   // user routes
   app.get('/users/:id', authenticated, userController.getUser)
 
+  // user routes
+  app.get('/users/:id', authenticated, userController.getUser)
+
+
   // Sign up.in.out routes 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
