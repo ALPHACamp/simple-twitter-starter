@@ -1,6 +1,10 @@
+const strftime = require('strftime')
 const bcrypt = require('bcrypt-nodejs')
 const db = require('../models')
 const User = db.User
+const Reply = db.Reply
+const Tweet = db.Tweet
+const Like = db.Like
 
 const userController = {
   signUpPage: (req, res) => {
@@ -44,7 +48,44 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+
+  getUser: (req, res) => {
+    const currentUser = req.user.id
+    return User.findByPk(req.params.id, {
+        include: [Like, { model: User, as: "Followers" },
+          { model: User, as: "Followings" }
+        ]
+      })
+      .then(profile => {
+        Tweet.findAll({
+          where: { UserId: req.user.id },
+          order: [
+            ['updatedAt', 'DESC']
+          ],
+          include: [Like, Reply]
+        }).then(tweets => {
+          tweets = tweets.map(tweet => ({
+            ...tweet.dataValues,
+            userName: profile.dataValues.name,
+            replyNums: tweet.Replies.length,
+            likeNums: tweet.Likes.length,
+            description: tweet.dataValues.description.substring(0, 140),
+            createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt)
+          }))
+          return res.render('user', {
+            currentUser: currentUser,
+            tweets: tweets,
+            tweetNums: tweets.length,
+            profile: profile,
+            followers: profile.Followers.length,
+            followings: profile.Followings.length,
+            likedTweets: profile.Likes.length
+          })
+        })
+      })
   }
+
 }
 
 module.exports = userController
