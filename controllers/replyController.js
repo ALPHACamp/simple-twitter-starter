@@ -1,4 +1,5 @@
 const db = require('../models')
+const strftime = require('strftime')
 const Reply = db.Reply
 const User = db.User
 const Tweet = db.Tweet
@@ -35,8 +36,26 @@ let replyController = {
         { model: Reply, include: [User] }
       ]
     }).then(tweet => {
-      return res.render('reply', {
-        tweet: tweet
+      Tweet.findAndCountAll({
+        where: { UserId: tweet.dataValues.User.id }
+      }).then(tweets => {
+        let replies = tweet.Replies.map(reply => ({
+          ...reply.dataValues,
+          createdAt: strftime('%Y-%m-%d, %H:%M', reply.dataValues.createdAt)
+        }))
+        console.log(tweets)
+        return res.render('reply', {
+          tweet: tweet,
+          description: tweet.description.substring(0, 140),
+          createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
+          replies: replies,
+          replyTweets: replies.length,
+          likedTweets: tweet.dataValues.User.Likes.length,
+          followings: tweet.dataValues.User.Followings.length,
+          followers: tweet.dataValues.User.Followers.length,
+          tweetNums: tweets.count,
+          isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(tweet.dataValues.User.id)
+        })
       })
     })
   }

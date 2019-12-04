@@ -14,8 +14,7 @@
       </div>
       <div class="col-md-10 mx-auto mt-3">
         <h4>Tweets <a href="/users/{{profile.id}}" class="badge badge-secondary">{{tweetNums}}</a></h4>
-        <h4>Following <a href="/users/{{currprofileentUser.id}}/followings"
-            class="badge badge-secondary">{{followings}}</a>
+        <h4>Following <a href="/users/{{profile.id}}/followings" class="badge badge-secondary">{{followings}}</a>
         </h4>
         <h4>Follower <a href="/users/{{profile.id}}/followers" class="badge badge-secondary">{{followers}}</a>
         </h4>
@@ -37,13 +36,13 @@
             <img class="rounded mx-auto my-auto" src="{{../profile.avatar}}" width="120px" height="120px" src="#">
           </div>
           <div class="col-8 card-body">
-            <a href="/tweets/{{this.id}}">
+            <a href="/tweets/{{this.id}}/replies">
               <h5 class="card-text">@{{this.userName}}, {{this.createdAt}}</h5>
             </a>
             <p class="card-text">{{this.description}}{{user.id}}
               {{user.avatar}}</p>
             <h5>
-              <a class="mr-3" href="#">Reply ({{this.replyNums}})</a>
+              <a class="mr-3" href="/tweets/{{this.id}}/replies">Reply ({{this.replyNums}})</a>
               <a class="text-danger" href="#">Like({{this.likeNums}})</a>
             </h5>
           </div>
