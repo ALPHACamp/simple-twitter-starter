@@ -107,6 +107,31 @@ const userController = {
       })
     })
   },
+
+  getFollowers: (req, res) => {
+    return User.findByPk(req.params.id, {
+      include: [
+        Tweet,
+        Like,
+        { model: User, as: "Followers" },
+        { model: User, as: 'Followings' }
+      ]
+    }).then(profile => {
+      console.log(profile.Followers)
+      profile.Followers = profile.Followers.map(follower => ({
+        ...follower.dataValues,
+        isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(follower.id)
+      }))
+      return res.render('followers', {
+        profile: profile,
+        tweetNums: profile.Tweets.length,
+        followers: profile.Followers.length,
+        followings: profile.Followings.length,
+        likedTweets: profile.Likes.length
+      })
+    })
+  },
+
   getUser: (req, res) => {
     if (Number(req.params.id) === Number(req.user.id)) {
       //console.log('the same')
@@ -156,5 +181,6 @@ const userController = {
       })
     }
   }
+}
 
 module.exports = userController
