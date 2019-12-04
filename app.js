@@ -6,7 +6,8 @@ const bodyParser = require('body-parser')
 const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('./config/passport')
-
+const methodOverride = require('method-override')
+if (process.env.NODE_ENV !== 'production') { require('dotenv').config() }
 
 const app = express()
 const port = 3010
@@ -16,7 +17,7 @@ app.engine('handlebars', handlebars({
   helpers: require('./config/handlebar-helpers.js')
 }))
 app.set('view engine', 'handlebars')
-
+app.use(methodOverride('_method'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
 app.use(passport.initialize())
@@ -28,8 +29,9 @@ app.use((req, res, next) => {
   res.locals.user = req.user
   next()
 })
-// use helpers.getUser(req) to replace req.user
-// use helpers.ensureAuthenticated(req) to replace req.isAuthenticated()
+app.use('/upload', express.static(__dirname + '/upload'))
+  // use helpers.getUser(req) to replace req.user
+  // use helpers.ensureAuthenticated(req) to replace req.isAuthenticated()
 
 require('./routes')(app, passport)
 
