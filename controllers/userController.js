@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt-nodejs')
+const helpers = require('../_helpers')
 const db = require('../models')
 const User = db.User
+const Tweet = db.Tweet
+const Like = db.Like
 const Followship = db.Followship
 
 const userController = {
@@ -49,10 +52,11 @@ const userController = {
 
   addFollowing: (req, res) => {
     return Followship.create({
-      followerId: req.user.id,
-      followingId: req.params.userId
+      followerId: helpers.getUser(req).id,
+      followingId: req.params.followingId
     })
       .then((followship) => {
+        console.log(helpers.getUser(req).id)
         return res.redirect('back')
       })
   },
@@ -60,12 +64,17 @@ const userController = {
   removeFollowing: (req, res) => {
     return Followship.findOne({
       where: {
-        followerId: req.user.id,
-        followingId: req.params.userId
+        followerId: helpers.getUser(req).id
       }
     })
       .then((followship) => {
-        followship.destroy()
+        console.log(followship)
+        followship.destroy({
+          where: {
+            followerId: helpers.getUser(req).id,
+            followingId: req.params.followingId
+          }
+        })
           .then((followship) => {
             return res.redirect('back')
           })
@@ -75,13 +84,25 @@ const userController = {
   getFollowings: (req, res) => {
     return User.findByPk(req.params.id, {
       include: [
+        Tweet,
+        Like,
+        { model: User, as: "Followers" },
         { model: User, as: 'Followings' }
       ]
-    }).then((user) => {
-      console.log(user.Followings)
-      // return res.render('followings',{user})
+    }).then(profile => {
+      profile.Followings = profile.Followings.map(following => ({
+        ...following.dataValues,
+        isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(following.id)
+      }))
+      console.log(helpers.getUser(req).id)
+      return res.render('followings', {
+        profile: profile,
+        tweetNums: profile.Tweets.length,
+        followers: profile.Followers.length,
+        followings: profile.Followings.length,
+        likedTweets: profile.Likes.length
+      })
     })
-
   }
 }
 
