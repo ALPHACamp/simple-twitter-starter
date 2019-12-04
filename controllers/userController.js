@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt-nodejs')
+const helpers = require('../_helpers')
 const strftime = require('strftime')
 const db = require('../models')
 const User = db.User
@@ -6,6 +7,7 @@ const Tweet = db.Tweet
 const Like = db.Like
 const Reply = db.Reply
 const Followship = db.Followship
+
 
 const userController = {
   signUpPage: (req, res) => {
@@ -49,6 +51,61 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+
+
+  addFollowing: (req, res) => {
+    if (Number(req.params.followingId) === Number(helpers.getUser(req).id)) {
+      console.log('if', req.params.followingId, helpers.getUser(req).id)
+      return res.redirect('back')
+    } else {
+      return Followship.create({
+        followerId: helpers.getUser(req).id,
+        followingId: req.params.followingId
+      }).then((followship) => {
+        console.log(helpers.getUser(req).id)
+        return res.redirect('back')
+      })
+    }
+  },
+
+  removeFollowing: (req, res) => {
+    return Followship.destroy({
+      where: {
+        followerId: helpers.getUser(req).id,
+        followingId: req.params.followingId
+      }
+    }).then((followship) => {
+      console.log(helpers.getUser(req).id)
+      console.log('rm', followship)
+      //followship.destroy().then(followship => {
+      return res.redirect('back')
+      //})
+    })
+  },
+
+  getFollowings: (req, res) => {
+    return User.findByPk(req.params.id, {
+      include: [
+        Tweet,
+        Like,
+        { model: User, as: "Followers" },
+        { model: User, as: 'Followings' }
+      ]
+    }).then(profile => {
+      profile.Followings = profile.Followings.map(following => ({
+        ...following.dataValues,
+        isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(following.id)
+      }))
+      console.log(helpers.getUser(req).id)
+      return res.render('followings', {
+        profile: profile,
+        tweetNums: profile.Tweets.length,
+        followers: profile.Followers.length,
+        followings: profile.Followings.length,
+        likedTweets: profile.Likes.length
+      })
+    })
   },
 
   getUser: (req, res) => {
@@ -96,6 +153,7 @@ const userController = {
               FollowingNums: currentUser.Followings.length,
             })
           })
+
       })
     }
   }
