@@ -206,7 +206,7 @@ describe('# tweet request', () => {
     })
   })
 
-  xcontext('# unlike', () => {
+  context('# unlike', () => {
     describe('like first tweet', () => {
       before(async () => {
 

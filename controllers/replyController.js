@@ -13,7 +13,7 @@ let replyController = {
     } else {
       return Reply.create({
         comment: req.body.comment,
-        TweetId: req.params.tweet_id,
+        TweetId: req.params.tweetId,
         UserId: helpers.getUser(req).id
       })
         .then((reply) => {
@@ -21,8 +21,9 @@ let replyController = {
         })
     }
   },
+
   getReply: (req, res) => {
-    return Tweet.findByPk(req.params.tweet_id, {
+    return Tweet.findByPk(req.params.tweetId, {
       include: [
         {
           model: User, include: [
