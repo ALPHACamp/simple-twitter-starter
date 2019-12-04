@@ -56,7 +56,7 @@
       </div>
     </div>
     {{/each}}
-    <form action="/tweets/{{tweet.id}}/replies">
+    <form action="/tweets/{{tweet.id}}/replies" method="POST">
       <div class="card mb-3 mx-4">
         <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" style="border: none;"
           name="comment"></textarea>

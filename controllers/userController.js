@@ -1,10 +1,13 @@
 const bcrypt = require('bcrypt-nodejs')
 const helpers = require('../_helpers')
+const strftime = require('strftime')
 const db = require('../models')
 const User = db.User
 const Tweet = db.Tweet
 const Like = db.Like
+const Reply = db.Reply
 const Followship = db.Followship
+
 
 const userController = {
   signUpPage: (req, res) => {
@@ -49,6 +52,7 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
+
 
   addFollowing: (req, res) => {
     return Followship.create({
@@ -103,7 +107,59 @@ const userController = {
         likedTweets: profile.Likes.length
       })
     })
+
+  getUser: (req, res) => {
+    if (Number(req.params.id) === Number(req.user.id)) {
+      //console.log('the same')
+      return res.redirect('/tweets')
+    } else {
+      User.findByPk(req.params.id, {
+        include:
+          [
+            Like,
+            { model: User, as: 'Followers' },
+            { model: User, as: 'Followings' }
+          ]
+      }).then(currentUser => {
+        Tweet.findAll(
+          {
+            where: { UserId: currentUser.id },
+            order: [['updatedAt', 'DESC']],
+            include: [Like, Reply]
+          }).then(tweets => {
+            tweets = tweets.map((tweet) => ({
+              ...tweet.dataValues,
+              description: tweet.dataValues.description.substring(0, 140),
+              createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
+              userName: currentUser.name,
+              replyNums: tweet.Replies.length,
+              likeNums: tweet.Likes.length
+            }))
+            //return res.json({
+            //  currentUser: currentUser,
+            //  tweets: tweets,
+            //  totalNums: tweets.length,
+            //  LikeNums: currentUser.Likes.length,
+            //  FollowerNums: currentUser.Followers.length,
+            //  FollowingNums: currentUser.Followings.length,
+            //})
+
+            return res.render('user', {
+              currentUser: currentUser,
+              tweets: tweets,
+              totalNums: tweets.length,
+              LikeNums: currentUser.Likes.length,
+              FollowerNums: currentUser.Followers.length,
+              FollowingNums: currentUser.Followings.length,
+            })
+          })
+
+      })
+    }
   }
+
+
+
 }
 
 module.exports = userController
