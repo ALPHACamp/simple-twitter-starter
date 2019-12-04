@@ -2,7 +2,11 @@ const tweetController = require('../controllers/tweetController.js')
 const userController = require('../controllers/userController.js')
 const replyController = require('../controllers/replyController.js')
 const adminController = require('../controllers/admin/adminController.js')
+const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
+
 const helpers = require('../_helpers')
+
 
 module.exports = (app, passport) => {
 
@@ -44,6 +48,12 @@ module.exports = (app, passport) => {
   app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
 
 
+  // users routes
+  app.get('/users/:id/tweets', authenticatedAdmin, userController.getUser)
+  app.get('/users/:id/edit', authenticatedAdmin, userController.editUser)
+  app.put('/users/:id', authenticatedAdmin, upload.single('image'), userController.putUser)
+
+
   // reply routes
   app.get('/tweets/:tweet_id/replies', authenticated, replyController.getReply)
   app.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
@@ -52,6 +62,5 @@ module.exports = (app, passport) => {
   app.post('/followships/:followingId', authenticated, userController.addFollowing)
   app.delete('/followships/:followingId', authenticated, userController.removeFollowing)
   app.get('/users/:id/followings', authenticated, userController.getFollowings)
-
 
 }
