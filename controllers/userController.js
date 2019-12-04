@@ -117,11 +117,11 @@ const userController = {
         { model: User, as: 'Followings' }
       ]
     }).then(profile => {
-      console.log(profile.Followers)
       profile.Followers = profile.Followers.map(follower => ({
         ...follower.dataValues,
         isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(follower.id)
       }))
+      console.log(profile.Followers[0].isFollowed)
       return res.render('followers', {
         profile: profile,
         tweetNums: profile.Tweets.length,
@@ -155,6 +155,36 @@ const userController = {
             return res.redirect('back')
           })
       })
+  },
+
+  getLikes: (req, res) => {
+    return User.findByPk(req.params.id, {
+      include: [
+        Tweet,
+        { model: Like, include: [User, { model: Tweet, include: [Like, Reply] }] },
+        { model: User, as: "Followers" },
+        { model: User, as: 'Followings' }
+      ]
+    }).then(profile => {
+      profile.Likes = profile.Likes.map((like) => ({
+        ...like.dataValues,
+        description: like.Tweet.description.substring(0, 100),
+        createdAt: strftime('%Y-%m-%d, %H:%M', like.Tweet.createdAt),
+        userName: like.User.name,
+        replyNums: like.Tweet.Replies.length,
+        likeNums: like.Tweet.Likes.length
+      }))
+      profile.isFollowed = helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)
+
+      console.log(profile.Likes[0])
+      return res.render('likes', {
+        profile: profile,
+        tweetNums: profile.Tweets.length,
+        followers: profile.Followers.length,
+        followings: profile.Followings.length,
+        likedTweets: profile.Likes.length
+      })
+    })
   },
 
   getUser: (req, res) => {
