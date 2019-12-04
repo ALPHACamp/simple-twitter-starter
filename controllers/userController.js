@@ -1,3 +1,7 @@
+
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+const imgur = require('imgur-node-api')
+const fs = require('fs')
 const bcrypt = require('bcrypt-nodejs')
 const helpers = require('../_helpers')
 const strftime = require('strftime')
@@ -54,6 +58,90 @@ const userController = {
   },
 
 
+  getUser: (req, res) => {
+    const currentUser = helpers.getUser(req).id
+    return User.findByPk(req.params.id, {
+      include: [Like, { model: User, as: "Followers" },
+        { model: User, as: "Followings" }
+      ]
+    })
+      .then(profile => {
+        Tweet.findAll({
+          where: { UserId: req.params.id },
+          order: [
+            ['updatedAt', 'DESC']
+          ],
+          include: [Like, Reply]
+        }).then(tweets => {
+          tweets = tweets.map(tweet => ({
+            ...tweet.dataValues,
+            userName: profile.dataValues.name,
+            replyNums: tweet.Replies.length,
+            likeNums: tweet.Likes.length,
+            description: tweet.dataValues.description.substring(0, 140),
+            createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt)
+          }))
+          return res.render('user', {
+            currentUser: currentUser,
+            tweets: tweets,
+            tweetNums: tweets.length,
+            profile: profile,
+            followers: profile.Followers.length,
+            followings: profile.Followings.length,
+            likedTweets: profile.Likes.length
+          })
+        })
+      })
+  },
+
+  editUser: (req, res) => {
+    User.findByPk(req.params.id).then(user => {
+      if (helpers.getUser(req).id === user.id) {
+        return res.render('editUser', { user: user })
+      } else {
+        req.flash('error_messages', `You are not authorized to access other user's profile`)
+        return res.redirect('back')
+      }
+    })
+  },
+
+  putUser: (req, res) => {
+    const { file } = req
+    const authUser = helpers.getUser(req).id
+    if (authUser !== Number(req.params.id)) {
+      req.flash('error_messages', `You are not authorized to access other user's profile`)
+      return res.redirect(`/users/${req.params.id}`)
+    }
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID);
+      imgur.upload(file.path, (err, img) => {
+        return User.findByPk(req.params.id)
+          .then((user) => {
+            user.update({
+              name: req.body.name,
+              avatar: file ? img.data.link : user.avatar,
+            })
+              .then((user) => {
+                req.flash('success_messages', 'User was successfully to update')
+                return res.redirect(`/users/${req.params.id}/edit`)
+              })
+          })
+      })
+    } else {
+      return User.findByPk(req.params.id)
+        .then((user) => {
+          user.update({
+            name: req.body.name,
+            avatar: user.avatar,
+          })
+            .then((user) => {
+              req.flash('success_messages', 'User was successfully to update')
+              return res.redirect(`/users/${req.params.id}/edit`)
+            })
+        })
+    }
+  },
+
   addFollowing: (req, res) => {
     if (Number(req.params.followingId) === Number(helpers.getUser(req).id)) {
       console.log('if', req.params.followingId, helpers.getUser(req).id)
@@ -107,57 +195,6 @@ const userController = {
       })
     })
   },
-
-  getUser: (req, res) => {
-    if (Number(req.params.id) === Number(req.user.id)) {
-      //console.log('the same')
-      return res.redirect('/tweets')
-    } else {
-      User.findByPk(req.params.id, {
-        include:
-          [
-            Like,
-            { model: User, as: 'Followers' },
-            { model: User, as: 'Followings' }
-          ]
-      }).then(currentUser => {
-        Tweet.findAll(
-          {
-            where: { UserId: currentUser.id },
-            order: [['updatedAt', 'DESC']],
-            include: [Like, Reply]
-          }).then(tweets => {
-            tweets = tweets.map((tweet) => ({
-              ...tweet.dataValues,
-              description: tweet.dataValues.description.substring(0, 140),
-              createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
-              userName: currentUser.name,
-              replyNums: tweet.Replies.length,
-              likeNums: tweet.Likes.length
-            }))
-            //return res.json({
-            //  currentUser: currentUser,
-            //  tweets: tweets,
-            //  totalNums: tweets.length,
-            //  LikeNums: currentUser.Likes.length,
-            //  FollowerNums: currentUser.Followers.length,
-            //  FollowingNums: currentUser.Followings.length,
-            //})
-
-            return res.render('user', {
-              currentUser: currentUser,
-              tweets: tweets,
-              totalNums: tweets.length,
-              LikeNums: currentUser.Likes.length,
-              FollowerNums: currentUser.Followers.length,
-              FollowingNums: currentUser.Followings.length,
-            })
-          })
-
-      })
-    }
-  }
-
 
 
 }

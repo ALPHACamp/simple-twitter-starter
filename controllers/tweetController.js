@@ -3,16 +3,21 @@ const helpers = require('../_helpers')
 const db = require('../models')
 const User = db.User
 const Tweet = db.Tweet
+const Reply = db.Reply
+const Like = db.Like
 const Followship = db.Followship
 
 const tweetController = {
   getTweets: (req, res) => {
-    return Tweet.findAll({ include: [User], order: [['updatedAt', 'DESC']] }).then(tweets => {
+    return Tweet.findAll({ include: [User, Reply, Like], order: [['updatedAt', 'DESC']] }).then(tweets => {
       tweets = tweets.map(tweet => ({
         ...tweet.dataValues,
         description: tweet.dataValues.description.substring(0, 140),
-        createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt)
+        createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
+        replyNums: tweet.dataValues.Replies.length,
+        likeNums: tweet.dataValues.Likes.length
       }))
+      //console.log(tweets)
       User.findAll({
         include: [
           { model: User, as: 'Followers' }
@@ -37,7 +42,7 @@ const tweetController = {
       return res.redirect('back')
     }
     return Tweet.create({
-      UserId: helpers.getUser.id,
+      UserId: helpers.getUser(req).id,
       description: req.body.description
     })
       .then((tweet) => {

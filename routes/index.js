@@ -2,7 +2,11 @@ const tweetController = require('../controllers/tweetController.js')
 const userController = require('../controllers/userController.js')
 const replyController = require('../controllers/replyController.js')
 const adminController = require('../controllers/admin/adminController.js')
+const multer = require('multer')
+const upload = multer({ dest: 'temp/' })
+
 const helpers = require('../_helpers')
+
 
 module.exports = (app, passport) => {
 
@@ -23,21 +27,22 @@ module.exports = (app, passport) => {
   // Home routes
   app.get('/', (req, res) => { res.redirect('/tweets') })
 
-  app.get('/tweets', authenticated, tweetController.getTweets)
-  app.post('/tweets', authenticated, tweetController.postTweet)
-  // user routes
-  app.get('/users/:id', authenticated, userController.getUser)
-
-  // user routes
-  app.get('/users/:id', authenticated, userController.getUser)
-
-
   // Sign up.in.out routes 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
   app.get('/signin', userController.signInPage)
   app.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
   app.get('/logout', userController.logout)
+
+  app.get('/tweets', authenticated, tweetController.getTweets)
+  app.post('/tweets', authenticated, tweetController.postTweet)
+
+  // users routes
+  app.get('/users/:id/tweets', authenticatedAdmin, userController.getUser)
+  app.get('/users/:id/edit', authenticated, userController.editUser)
+  app.get('/users/:id', authenticated, userController.getUser)
+  app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+
 
   // reply routes
   app.get('/tweets/:tweet_id/replies', authenticated, replyController.getReply)
@@ -48,8 +53,8 @@ module.exports = (app, passport) => {
   app.delete('/followships/:followingId', authenticated, userController.removeFollowing)
   app.get('/users/:id/followings', authenticated, userController.getFollowings)
 
+
   // admin routes
   app.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
   app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
-
 }
