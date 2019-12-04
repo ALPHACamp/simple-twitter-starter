@@ -20,7 +20,7 @@ const tweetController = {
       }).then(users => {
         users = users.map(user => ({
           ...user.dataValues,
-          introduction: user.dataValues.introduction.substring(0, 100),
+          //introduction: user.dataValues.introduction.substring(0, 100),
           FollowCount: user.Followers.length,
           isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(user.id)
         }))
@@ -37,12 +37,12 @@ const tweetController = {
       return res.redirect('back')
     }
     return Tweet.create({
-      UserId: req.user.id,
+      UserId: helpers.getUser.id,
       description: req.body.description
     })
       .then((tweet) => {
         req.flash('success_messages', 'Tweet was successfully created')
-        res.redirect('back')
+        return res.redirect('back')
       })
   }
 
