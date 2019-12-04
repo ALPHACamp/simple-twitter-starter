@@ -132,6 +132,31 @@ const userController = {
     })
   },
 
+  addLike: (req, res) => {
+    return Like.create({
+      UserId: helpers.getUser(req).id,
+      TweetId: req.params.id
+    })
+      .then(tweet => {
+        return res.redirect('back')
+      })
+  },
+
+  removeLike: (req, res) => {
+    return Like.findOne({
+      where: {
+        UserId: helpers.getUser(req).id,
+        TweetId: req.params.id
+      }
+    })
+      .then(like => {
+        like.destroy()
+          .then(like => {
+            return res.redirect('back')
+          })
+      })
+  },
+
   getUser: (req, res) => {
     if (Number(req.params.id) === Number(req.user.id)) {
       //console.log('the same')

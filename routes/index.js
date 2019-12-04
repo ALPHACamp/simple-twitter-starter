@@ -55,5 +55,9 @@ module.exports = (app, passport) => {
   app.get('/users/:id/followings', authenticated, userController.getFollowings)
   app.get('/users/:id/followers', authenticated, userController.getFollowers)
 
+  // like routes
+  app.post('/tweets/:id/like', authenticated, userController.addFavorite)
+  app.delete('/tweets/:id/unlike', authenticated, userController.removeFavorite)
+
 
 }
