@@ -87,3 +87,5 @@ typings/
 .dynamodb/
 
 config/config.json
+
+./temp

@@ -230,18 +230,16 @@ const userController = {
   },
 
   removeLike: (req, res) => {
-    return Like.findOne({
+    Like.destroy({
       where: {
         UserId: helpers.getUser(req).id,
         TweetId: req.params.id
       }
+    }).then(like => {
+
+      return res.redirect('back')
+
     })
-      .then(like => {
-        like.destroy()
-          .then(like => {
-            return res.redirect('back')
-          })
-      })
   },
 
   getLikes: (req, res) => {
