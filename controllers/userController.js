@@ -72,6 +72,16 @@ const userController = {
           ],
           include: [Like, Reply]
         }).then(tweets => {
+          let isFollowed = ''
+          if (Number(profile.id) === Number(helpers.getUser(req).id)) {
+            isFollowed = 'self'
+          } else {
+            if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
+              isFollowed = 'unfollow'
+            } else {
+              isFollowed = 'follow'
+            }
+          }
           tweets = tweets.map(tweet => ({
             ...tweet.dataValues,
             userName: profile.dataValues.name,
@@ -87,7 +97,8 @@ const userController = {
             profile: profile,
             followers: profile.Followers.length,
             followings: profile.Followings.length,
-            likedTweets: profile.Likes.length
+            likedTweets: profile.Likes.length,
+            isFollowed: isFollowed
           })
         })
       })
@@ -184,13 +195,23 @@ const userController = {
         ...following.dataValues,
         isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(following.id)
       }))
-      console.log(helpers.getUser(req).id)
+      let isFollowed = ''
+      if (Number(profile.id) === Number(helpers.getUser(req).id)) {
+        isFollowed = 'self'
+      } else {
+        if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
+          isFollowed = 'unfollow'
+        } else {
+          isFollowed = 'follow'
+        }
+      }
       return res.render('followings', {
         profile: profile,
         tweetNums: profile.Tweets.length,
         followers: profile.Followers.length,
         followings: profile.Followings.length,
-        likedTweets: profile.Likes.length
+        likedTweets: profile.Likes.length,
+        isFollowed: isFollowed
       })
     })
   },
@@ -208,13 +229,23 @@ const userController = {
         ...follower.dataValues,
         isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(follower.id)
       }))
-      console.log(profile.Followers[0].isFollowed)
+      let isFollowed = ''
+      if (Number(profile.id) === Number(helpers.getUser(req).id)) {
+        isFollowed = 'self'
+      } else {
+        if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
+          isFollowed = 'unfollow'
+        } else {
+          isFollowed = 'follow'
+        }
+      }
       return res.render('followers', {
         profile: profile,
         tweetNums: profile.Tweets.length,
         followers: profile.Followers.length,
         followings: profile.Followings.length,
-        likedTweets: profile.Likes.length
+        likedTweets: profile.Likes.length,
+        isFollowed: isFollowed
       })
     })
   },
@@ -251,6 +282,16 @@ const userController = {
         { model: User, as: 'Followings' }
       ]
     }).then(profile => {
+      let isFollowed = ''
+      if (Number(profile.id) === Number(helpers.getUser(req).id)) {
+        isFollowed = 'self'
+      } else {
+        if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
+          isFollowed = 'unfollow'
+        } else {
+          isFollowed = 'follow'
+        }
+      }
       profile.Likes = profile.Likes.map((like) => ({
         ...like.dataValues,
         description: like.Tweet.description.substring(0, 100),
@@ -259,15 +300,14 @@ const userController = {
         replyNums: like.Tweet.Replies.length,
         likeNums: like.Tweet.Likes.length
       }))
-      profile.isFollowed = helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)
 
-      console.log(profile.Likes[0])
       return res.render('likes', {
         profile: profile,
         tweetNums: profile.Tweets.length,
         followers: profile.Followers.length,
         followings: profile.Followings.length,
-        likedTweets: profile.Likes.length
+        likedTweets: profile.Likes.length,
+        isFollowed: isFollowed
       })
     })
   },
