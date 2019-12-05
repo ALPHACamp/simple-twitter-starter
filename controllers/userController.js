@@ -1,4 +1,3 @@
-const strftime = require('strftime')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const imgur = require('imgur-node-api')
 const fs = require('fs')
@@ -59,7 +58,7 @@ const userController = {
 
 
   getUser: (req, res) => {
-    const currentUser = req.user.id
+    const currentUser = helpers.getUser(req).id
     return User.findByPk(req.params.id, {
       include: [Like, { model: User, as: "Followers" },
         { model: User, as: "Followings" }
@@ -67,12 +66,22 @@ const userController = {
     })
       .then(profile => {
         Tweet.findAll({
-          where: { UserId: req.user.id },
+          where: { UserId: req.params.id },
           order: [
             ['updatedAt', 'DESC']
           ],
           include: [Like, Reply]
         }).then(tweets => {
+          let isFollowed = ''
+          if (Number(profile.id) === Number(helpers.getUser(req).id)) {
+            isFollowed = 'self'
+          } else {
+            if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
+              isFollowed = 'unfollow'
+            } else {
+              isFollowed = 'follow'
+            }
+          }
           tweets = tweets.map(tweet => ({
             ...tweet.dataValues,
             userName: profile.dataValues.name,
@@ -88,7 +97,8 @@ const userController = {
             profile: profile,
             followers: profile.Followers.length,
             followings: profile.Followings.length,
-            likedTweets: profile.Likes.length
+            likedTweets: profile.Likes.length,
+            isFollowed: isFollowed
           })
         })
       })
@@ -96,7 +106,7 @@ const userController = {
 
   editUser: (req, res) => {
     User.findByPk(req.params.id).then(user => {
-      if (req.user.id === user.id) {
+      if (helpers.getUser(req).id === user.id) {
         return res.render('editUser', { user: user })
       } else {
         req.flash('error_messages', `You are not authorized to access other user's profile`)
@@ -107,7 +117,7 @@ const userController = {
 
   putUser: (req, res) => {
     const { file } = req
-    const authUser = req.user.id
+    const authUser = helpers.getUser(req).id
     if (authUser !== Number(req.params.id)) {
       req.flash('error_messages', `You are not authorized to access other user's profile`)
       return res.redirect(`/users/${req.params.id}`)
@@ -143,34 +153,33 @@ const userController = {
   },
 
   addFollowing: (req, res) => {
-    return Followship.create({
-      followerId: helpers.getUser(req).id,
-      followingId: req.params.followingId
-    })
-      .then((followship) => {
+    if (Number(req.params.followingId) === Number(helpers.getUser(req).id)) {
+      console.log('if', req.params.followingId, helpers.getUser(req).id)
+      return res.redirect('back')
+    } else {
+      return Followship.create({
+        followerId: helpers.getUser(req).id,
+        followingId: req.params.followingId
+      }).then((followship) => {
         console.log(helpers.getUser(req).id)
         return res.redirect('back')
       })
+    }
   },
 
   removeFollowing: (req, res) => {
-    return Followship.findOne({
+    return Followship.destroy({
       where: {
-        followerId: helpers.getUser(req).id
+        followerId: helpers.getUser(req).id,
+        followingId: req.params.followingId
       }
+    }).then((followship) => {
+      console.log(helpers.getUser(req).id)
+      console.log('rm', followship)
+      //followship.destroy().then(followship => {
+      return res.redirect('back')
+      //})
     })
-      .then((followship) => {
-        console.log(followship)
-        followship.destroy({
-          where: {
-            followerId: helpers.getUser(req).id,
-            followingId: req.params.followingId
-          }
-        })
-          .then((followship) => {
-            return res.redirect('back')
-          })
-      })
   },
 
   getFollowings: (req, res) => {
@@ -186,13 +195,23 @@ const userController = {
         ...following.dataValues,
         isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(following.id)
       }))
-      console.log(helpers.getUser(req).id)
+      let isFollowed = ''
+      if (Number(profile.id) === Number(helpers.getUser(req).id)) {
+        isFollowed = 'self'
+      } else {
+        if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
+          isFollowed = 'unfollow'
+        } else {
+          isFollowed = 'follow'
+        }
+      }
       return res.render('followings', {
         profile: profile,
         tweetNums: profile.Tweets.length,
         followers: profile.Followers.length,
         followings: profile.Followings.length,
-        likedTweets: profile.Likes.length
+        likedTweets: profile.Likes.length,
+        isFollowed: isFollowed
       })
     })
   },
@@ -210,13 +229,23 @@ const userController = {
         ...follower.dataValues,
         isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(follower.id)
       }))
-      console.log(profile.Followers[0].isFollowed)
+      let isFollowed = ''
+      if (Number(profile.id) === Number(helpers.getUser(req).id)) {
+        isFollowed = 'self'
+      } else {
+        if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
+          isFollowed = 'unfollow'
+        } else {
+          isFollowed = 'follow'
+        }
+      }
       return res.render('followers', {
         profile: profile,
         tweetNums: profile.Tweets.length,
         followers: profile.Followers.length,
         followings: profile.Followings.length,
-        likedTweets: profile.Likes.length
+        likedTweets: profile.Likes.length,
+        isFollowed: isFollowed
       })
     })
   },
@@ -232,18 +261,16 @@ const userController = {
   },
 
   removeLike: (req, res) => {
-    return Like.findOne({
+    Like.destroy({
       where: {
         UserId: helpers.getUser(req).id,
         TweetId: req.params.id
       }
+    }).then(like => {
+
+      return res.redirect('back')
+
     })
-      .then(like => {
-        like.destroy()
-          .then(like => {
-            return res.redirect('back')
-          })
-      })
   },
 
   getLikes: (req, res) => {
@@ -255,6 +282,16 @@ const userController = {
         { model: User, as: 'Followings' }
       ]
     }).then(profile => {
+      let isFollowed = ''
+      if (Number(profile.id) === Number(helpers.getUser(req).id)) {
+        isFollowed = 'self'
+      } else {
+        if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
+          isFollowed = 'unfollow'
+        } else {
+          isFollowed = 'follow'
+        }
+      }
       profile.Likes = profile.Likes.map((like) => ({
         ...like.dataValues,
         description: like.Tweet.description.substring(0, 100),
@@ -263,69 +300,17 @@ const userController = {
         replyNums: like.Tweet.Replies.length,
         likeNums: like.Tweet.Likes.length
       }))
-      profile.isFollowed = helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)
 
-      console.log(profile.Likes[0])
       return res.render('likes', {
         profile: profile,
         tweetNums: profile.Tweets.length,
         followers: profile.Followers.length,
         followings: profile.Followings.length,
-        likedTweets: profile.Likes.length
+        likedTweets: profile.Likes.length,
+        isFollowed: isFollowed
       })
     })
   },
-
-  getUser: (req, res) => {
-    if (Number(req.params.id) === Number(req.user.id)) {
-      //console.log('the same')
-      return res.redirect('/tweets')
-    } else {
-      User.findByPk(req.params.id, {
-        include:
-          [
-            Like,
-            { model: User, as: 'Followers' },
-            { model: User, as: 'Followings' }
-          ]
-      }).then(currentUser => {
-        Tweet.findAll(
-          {
-            where: { UserId: currentUser.id },
-            order: [['updatedAt', 'DESC']],
-            include: [Like, Reply]
-          }).then(tweets => {
-            tweets = tweets.map((tweet) => ({
-              ...tweet.dataValues,
-              description: tweet.dataValues.description.substring(0, 140),
-              createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
-              userName: currentUser.name,
-              replyNums: tweet.Replies.length,
-              likeNums: tweet.Likes.length
-            }))
-            //return res.json({
-            //  currentUser: currentUser,
-            //  tweets: tweets,
-            //  totalNums: tweets.length,
-            //  LikeNums: currentUser.Likes.length,
-            //  FollowerNums: currentUser.Followers.length,
-            //  FollowingNums: currentUser.Followings.length,
-            //})
-
-            return res.render('user', {
-              currentUser: currentUser,
-              tweets: tweets,
-              totalNums: tweets.length,
-              LikeNums: currentUser.Likes.length,
-              FollowerNums: currentUser.Followers.length,
-              FollowingNums: currentUser.Followings.length,
-            })
-          })
-
-      })
-    }
-  }
-
 
 }
 

@@ -6,14 +6,24 @@
     </div>
 
     <h4 style="color:teal">{{profile.name}}</h4>
-    <p style="word-wrap: break-word; color:dodgerblue">{{profile.introduction}}</p>
+    <p style="word-wrap: break-word; color:rgb(128, 141, 155)">{{profile.introduction}}</p>
     <h5>Tweets {{tweetNums}}</h5>
     <h5>Following {{followings}}</h5>
     <h5>Follower {{followers}}</h5>
     <h5>Like {{likedTweets}}</h5>
-    <form action="/followships/{{profile.id}}" method="POST">
-      <button type="submit" class="btn btn-primary text-dark  font-weight-bold">Follow</button>
-    </form>
+    <div class="mt-3">
+      {{#ifCond isFollowed "self"}}
+      <a href="/users/{{../profile.id}}/edit" class="btn btn-primary btn-lg btn-block">Edit Profile</a>
+      {{/ifCond}}
+      {{#ifCond isFollowed "unfollow"}}
+      <form action="/followships/{{../profile.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">Unfollow</button></form>
+      {{/ifCond}}
+      {{#ifCond isFollowed "follow"}}
+      <form action="/followships/{{../profile.id}}" method="POST" style="display: contents;"><button type="submit"
+          class="btn btn-primary">Follow</button></form>
+      {{/ifCond}}
+    </div>
   </div>
 
   <div class="col-md-9">

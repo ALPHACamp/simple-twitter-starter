@@ -1,6 +1,6 @@
 <div>
-  <ul class="nav">
-    <li class="nav-item"><a href="tweets" class="nav-link">tweet</a></li>
+  <ul class="nav nav-tabs">
+    <li class="nav-item"><a href="tweets" class="nav-link active">tweet</a></li>
     <li class="nav-item"><a href="users" class="nav-link">user</a></li>
   </ul>
 </div>
@@ -12,20 +12,23 @@
   <table class="table">
     <thead>
       <tr>
-        <td>#</td>
-        <td>description</td>
-        <td>user</td>
-        <td colspan="2"></td>
+        <td>User</td>
+        <td>Description</td>
+        <td>Reply</td>
+        <td colspan="1"></td>
       </tr>
     </thead>
     <tbody>
       {{#each tweets }}
       <tr>
-        <td>{{this.id}}</td>
-        <td>{{this.description}}</td>
         <td>{{this.username}}</td>
-        <td><a href="#">edit</a></td>
-        <td><a href="#">delete</a></td>
+        <td>{{this.description}}</td>
+        <td>{{this.comment}}</td>
+        <td>
+          <form action="/admin/tweets/{{this.id}}?_method=DELETE" method="POST">
+            <button class="btn btn-danger">Delete</button>
+          </form>
+        </td>
       </tr>
       {{/each}}
     </tbody>
