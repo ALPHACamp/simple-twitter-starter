@@ -17,7 +17,7 @@ app.engine('handlebars', handlebars({
   helpers: require('./config/handlebar-helpers.js')
 }))
 app.set('view engine', 'handlebars')
-app.use(methodOverride('_method'))
+//app.use(methodOverride('_method'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
@@ -31,8 +31,8 @@ app.use((req, res, next) => {
   next()
 })
 app.use('/upload', express.static(__dirname + '/upload'))
-  // use helpers.getUser(req) to replace req.user
-  // use helpers.ensureAuthenticated(req) to replace req.isAuthenticated()
+// use helpers.getUser(req) to replace req.user
+// use helpers.ensureAuthenticated(req) to replace req.isAuthenticated()
 
 require('./routes')(app, passport)
 
