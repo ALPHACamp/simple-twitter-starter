@@ -1,4 +1,3 @@
-const strftime = require('strftime')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const imgur = require('imgur-node-api')
 const fs = require('fs')
@@ -194,7 +193,84 @@ const userController = {
         likedTweets: profile.Likes.length
       })
     })
-  }
+  },
+
+  getFollowers: (req, res) => {
+    return User.findByPk(req.params.id, {
+      include: [
+        Tweet,
+        Like,
+        { model: User, as: "Followers" },
+        { model: User, as: 'Followings' }
+      ]
+    }).then(profile => {
+      profile.Followers = profile.Followers.map(follower => ({
+        ...follower.dataValues,
+        isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(follower.id)
+      }))
+      console.log(profile.Followers[0].isFollowed)
+      return res.render('followers', {
+        profile: profile,
+        tweetNums: profile.Tweets.length,
+        followers: profile.Followers.length,
+        followings: profile.Followings.length,
+        likedTweets: profile.Likes.length
+      })
+    })
+  },
+
+  addLike: (req, res) => {
+    return Like.create({
+      UserId: helpers.getUser(req).id,
+      TweetId: req.params.id
+    })
+      .then(tweet => {
+        return res.redirect('back')
+      })
+  },
+
+  removeLike: (req, res) => {
+    Like.destroy({
+      where: {
+        UserId: helpers.getUser(req).id,
+        TweetId: req.params.id
+      }
+    }).then(like => {
+
+      return res.redirect('back')
+
+    })
+  },
+
+  getLikes: (req, res) => {
+    return User.findByPk(req.params.id, {
+      include: [
+        Tweet,
+        { model: Like, include: [User, { model: Tweet, include: [Like, Reply] }] },
+        { model: User, as: "Followers" },
+        { model: User, as: 'Followings' }
+      ]
+    }).then(profile => {
+      profile.Likes = profile.Likes.map((like) => ({
+        ...like.dataValues,
+        description: like.Tweet.description.substring(0, 100),
+        createdAt: strftime('%Y-%m-%d, %H:%M', like.Tweet.createdAt),
+        userName: like.User.name,
+        replyNums: like.Tweet.Replies.length,
+        likeNums: like.Tweet.Likes.length
+      }))
+      profile.isFollowed = helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)
+
+      console.log(profile.Likes[0])
+      return res.render('likes', {
+        profile: profile,
+        tweetNums: profile.Tweets.length,
+        followers: profile.Followers.length,
+        followings: profile.Followings.length,
+        likedTweets: profile.Likes.length
+      })
+    })
+  },
 
 }
 

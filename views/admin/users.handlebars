@@ -1,7 +1,7 @@
 <div>
-  <ul class="nav">
+  <ul class="nav nav-tabs">
     <li class="nav-item"><a href="tweets" class="nav-link">tweet</a></li>
-    <li class="nav-item"><a href="users" class="nav-link">user</a></li>
+    <li class="nav-item"><a href="users" class="nav-link active">user</a></li>
   </ul>
 </div>
 <!-- Main Content -->
@@ -22,14 +22,14 @@
     </thead>
     <tbody>
       {{#each users }}
-        <tr>
-          <td>{{this.id}}</td>
-          <td>{{this.name}}</td>
-          <td>{{this.Tweets.length}}</td>
-          <td>{{this.Followers.length}}</td>
-          <td>{{this.Followings.length}}</td>
-          <td>{{this.Likes.length}}</td>
-        </tr>
+      <tr>
+        <td>{{this.id}}</td>
+        <td>{{this.name}}</td>
+        <td>{{this.Tweets.length}}</td>
+        <td>{{this.Followers.length}}</td>
+        <td>{{this.Followings.length}}</td>
+        <td>{{this.Likes.length}}</td>
+      </tr>
       {{/each}}
     </tbody>
   </table>

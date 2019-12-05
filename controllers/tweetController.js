@@ -15,7 +15,9 @@ const tweetController = {
         description: tweet.dataValues.description.substring(0, 140),
         createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
         replyNums: tweet.dataValues.Replies.length,
-        likeNums: tweet.dataValues.Likes.length
+        likeNums: tweet.dataValues.Likes.length,
+        //userId: tweet.UserId
+        isLiked: tweet.dataValues.Likes.map(d => d.UserId).includes(helpers.getUser(req).id)
       }))
       //console.log(tweets)
       User.findAll({

@@ -27,16 +27,6 @@ module.exports = (app, passport) => {
   // Home routes
   app.get('/', (req, res) => { res.redirect('/tweets') })
 
-
-  // tweet routes
-  app.get('/tweets', authenticated, tweetController.getTweets)
-  app.post('/tweets', authenticated, tweetController.postTweet)
-  // user routes
-  app.get('/users/:id', authenticated, userController.getUser)
-
-  // user routes
-  app.get('/users/:id', authenticated, userController.getUser)
-
   // Sign up.in.out routes 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
@@ -44,6 +34,7 @@ module.exports = (app, passport) => {
   app.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
   app.get('/logout', userController.logout)
 
+  // tweet routes
   app.get('/tweets', authenticated, tweetController.getTweets)
   app.post('/tweets', authenticated, tweetController.postTweet)
 
@@ -52,14 +43,6 @@ module.exports = (app, passport) => {
   app.get('/users/:id/edit', authenticated, userController.editUser)
   app.get('/users/:id', authenticated, userController.getUser)
   app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
-
-
-
-  // users routes
-  app.get('/users/:id/tweets', authenticatedAdmin, userController.getUser)
-  app.get('/users/:id/edit', authenticatedAdmin, userController.editUser)
-  app.put('/users/:id', authenticatedAdmin, upload.single('image'), userController.putUser)
-
 
 
   // reply routes
@@ -79,5 +62,6 @@ module.exports = (app, passport) => {
 
   // admin routes
   app.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
+  app.delete('/admin/tweets/:id', authenticatedAdmin, adminController.deleteTweets)
   app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
 }
