@@ -1,4 +1,4 @@
-
+const strftime = require('strftime')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const imgur = require('imgur-node-api')
 const fs = require('fs')
@@ -194,8 +194,7 @@ const userController = {
         likedTweets: profile.Likes.length
       })
     })
-  },
-
+  }
 
 }
 

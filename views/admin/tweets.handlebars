@@ -12,21 +12,20 @@
   <table class="table">
     <thead>
       <tr>
-        <td>#</td>
-        <td>description</td>
-        <td>user</td>
-        <td colspan="2"></td>
+        <td>User</td>
+        <td>Description</td>
+        <td>Reply</td>
+        <td colspan="1"></td>
       </tr>
     </thead>
     <tbody>
       {{#each tweets }}
-      <tr>
-        <td>{{this.id}}</td>
-        <td>{{this.description}}</td>
-        <td>{{this.username}}</td>
-        <td><a href="#">edit</a></td>
-        <td><a href="#">delete</a></td>
-      </tr>
+        <tr>
+          <td>{{this.username}}</td>
+          <td>{{this.description}}</td>
+          <td>{{this.comment}}</td>
+          <td><a href="#">Delete</a></td>
+        </tr>
       {{/each}}
     </tbody>
   </table>
