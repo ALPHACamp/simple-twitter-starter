@@ -27,6 +27,7 @@ module.exports = (app, passport) => {
   // Home routes
   app.get('/', (req, res) => { res.redirect('/tweets') })
 
+
   // tweet routes
   app.get('/tweets', authenticated, tweetController.getTweets)
   app.post('/tweets', authenticated, tweetController.postTweet)
@@ -36,7 +37,6 @@ module.exports = (app, passport) => {
   // user routes
   app.get('/users/:id', authenticated, userController.getUser)
 
-
   // Sign up.in.out routes 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
@@ -44,9 +44,14 @@ module.exports = (app, passport) => {
   app.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
   app.get('/logout', userController.logout)
 
-  // admin routes
-  app.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
-  app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
+  app.get('/tweets', authenticated, tweetController.getTweets)
+  app.post('/tweets', authenticated, tweetController.postTweet)
+
+  // users routes
+  app.get('/users/:id/tweets', authenticatedAdmin, userController.getUser)
+  app.get('/users/:id/edit', authenticated, userController.editUser)
+  app.get('/users/:id', authenticated, userController.getUser)
+  app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
 
 
@@ -58,8 +63,8 @@ module.exports = (app, passport) => {
 
 
   // reply routes
-  app.get('/tweets/:tweet_id/replies', authenticated, replyController.getReply)
-  app.post('/tweets/:tweet_id/replies', authenticated, replyController.postReply)
+  app.get('/tweets/:tweetId/replies', authenticated, replyController.getReply)
+  app.post('/tweets/:tweetId/replies', authenticated, replyController.postReply)
 
   // followship routes
   app.post('/followships/:followingId', authenticated, userController.addFollowing)
@@ -72,4 +77,7 @@ module.exports = (app, passport) => {
   app.delete('/tweets/:id/unlike', authenticated, userController.removeLike)
   app.get('/users/:id/likes', authenticated, userController.getLikes)
 
+  // admin routes
+  app.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
+  app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
 }

@@ -59,15 +59,15 @@ const userController = {
 
 
   getUser: (req, res) => {
-    const currentUser = req.user.id
+    const currentUser = helpers.getUser(req).id
     return User.findByPk(req.params.id, {
-        include: [Like, { model: User, as: "Followers" },
-          { model: User, as: "Followings" }
-        ]
-      })
+      include: [Like, { model: User, as: "Followers" },
+        { model: User, as: "Followings" }
+      ]
+    })
       .then(profile => {
         Tweet.findAll({
-          where: { UserId: req.user.id },
+          where: { UserId: req.params.id },
           order: [
             ['updatedAt', 'DESC']
           ],
@@ -96,7 +96,7 @@ const userController = {
 
   editUser: (req, res) => {
     User.findByPk(req.params.id).then(user => {
-      if (req.user.id === user.id) {
+      if (helpers.getUser(req).id === user.id) {
         return res.render('editUser', { user: user })
       } else {
         req.flash('error_messages', `You are not authorized to access other user's profile`)
@@ -107,7 +107,7 @@ const userController = {
 
   putUser: (req, res) => {
     const { file } = req
-    const authUser = req.user.id
+    const authUser = helpers.getUser(req).id
     if (authUser !== Number(req.params.id)) {
       req.flash('error_messages', `You are not authorized to access other user's profile`)
       return res.redirect(`/users/${req.params.id}`)
@@ -118,9 +118,9 @@ const userController = {
         return User.findByPk(req.params.id)
           .then((user) => {
             user.update({
-                name: req.body.name,
-                avatar: file ? img.data.link : user.avatar,
-              })
+              name: req.body.name,
+              avatar: file ? img.data.link : user.avatar,
+            })
               .then((user) => {
                 req.flash('success_messages', 'User was successfully to update')
                 return res.redirect(`/users/${req.params.id}/edit`)
@@ -131,48 +131,45 @@ const userController = {
       return User.findByPk(req.params.id)
         .then((user) => {
           user.update({
-              name: req.body.name,
-              avatar: user.avatar,
-            })
+            name: req.body.name,
+            avatar: user.avatar,
+          })
             .then((user) => {
               req.flash('success_messages', 'User was successfully to update')
               return res.redirect(`/users/${req.params.id}/edit`)
             })
         })
     }
-  }
-
-
+  },
 
   addFollowing: (req, res) => {
-    return Followship.create({
-      followerId: helpers.getUser(req).id,
-      followingId: req.params.followingId
-    })
-      .then((followship) => {
+    if (Number(req.params.followingId) === Number(helpers.getUser(req).id)) {
+      console.log('if', req.params.followingId, helpers.getUser(req).id)
+      return res.redirect('back')
+    } else {
+      return Followship.create({
+        followerId: helpers.getUser(req).id,
+        followingId: req.params.followingId
+      }).then((followship) => {
         console.log(helpers.getUser(req).id)
         return res.redirect('back')
       })
+    }
   },
 
   removeFollowing: (req, res) => {
-    return Followship.findOne({
+    return Followship.destroy({
       where: {
-        followerId: helpers.getUser(req).id
+        followerId: helpers.getUser(req).id,
+        followingId: req.params.followingId
       }
+    }).then((followship) => {
+      console.log(helpers.getUser(req).id)
+      console.log('rm', followship)
+      //followship.destroy().then(followship => {
+      return res.redirect('back')
+      //})
     })
-      .then((followship) => {
-        console.log(followship)
-        followship.destroy({
-          where: {
-            followerId: helpers.getUser(req).id,
-            followingId: req.params.followingId
-          }
-        })
-          .then((followship) => {
-            return res.redirect('back')
-          })
-      })
   },
 
   getFollowings: (req, res) => {
@@ -197,138 +194,7 @@ const userController = {
         likedTweets: profile.Likes.length
       })
     })
-  },
-
-  getFollowers: (req, res) => {
-    return User.findByPk(req.params.id, {
-      include: [
-        Tweet,
-        Like,
-        { model: User, as: "Followers" },
-        { model: User, as: 'Followings' }
-      ]
-    }).then(profile => {
-      profile.Followers = profile.Followers.map(follower => ({
-        ...follower.dataValues,
-        isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(follower.id)
-      }))
-      console.log(profile.Followers[0].isFollowed)
-      return res.render('followers', {
-        profile: profile,
-        tweetNums: profile.Tweets.length,
-        followers: profile.Followers.length,
-        followings: profile.Followings.length,
-        likedTweets: profile.Likes.length
-      })
-    })
-  },
-
-  addLike: (req, res) => {
-    return Like.create({
-      UserId: helpers.getUser(req).id,
-      TweetId: req.params.id
-    })
-      .then(tweet => {
-        return res.redirect('back')
-      })
-  },
-
-  removeLike: (req, res) => {
-    return Like.findOne({
-      where: {
-        UserId: helpers.getUser(req).id,
-        TweetId: req.params.id
-      }
-    })
-      .then(like => {
-        like.destroy()
-          .then(like => {
-            return res.redirect('back')
-          })
-      })
-  },
-
-  getLikes: (req, res) => {
-    return User.findByPk(req.params.id, {
-      include: [
-        Tweet,
-        { model: Like, include: [User, { model: Tweet, include: [Like, Reply] }] },
-        { model: User, as: "Followers" },
-        { model: User, as: 'Followings' }
-      ]
-    }).then(profile => {
-      profile.Likes = profile.Likes.map((like) => ({
-        ...like.dataValues,
-        description: like.Tweet.description.substring(0, 100),
-        createdAt: strftime('%Y-%m-%d, %H:%M', like.Tweet.createdAt),
-        userName: like.User.name,
-        replyNums: like.Tweet.Replies.length,
-        likeNums: like.Tweet.Likes.length
-      }))
-      profile.isFollowed = helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)
-
-      console.log(profile.Likes[0])
-      return res.render('likes', {
-        profile: profile,
-        tweetNums: profile.Tweets.length,
-        followers: profile.Followers.length,
-        followings: profile.Followings.length,
-        likedTweets: profile.Likes.length
-      })
-    })
-  },
-
-
-  getUser: (req, res) => {
-    if (Number(req.params.id) === Number(req.user.id)) {
-      //console.log('the same')
-      return res.redirect('/tweets')
-    } else {
-      User.findByPk(req.params.id, {
-        include:
-          [
-            Like,
-            { model: User, as: 'Followers' },
-            { model: User, as: 'Followings' }
-          ]
-      }).then(currentUser => {
-        Tweet.findAll(
-          {
-            where: { UserId: currentUser.id },
-            order: [['updatedAt', 'DESC']],
-            include: [Like, Reply]
-          }).then(tweets => {
-            tweets = tweets.map((tweet) => ({
-              ...tweet.dataValues,
-              description: tweet.dataValues.description.substring(0, 140),
-              createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
-              userName: currentUser.name,
-              replyNums: tweet.Replies.length,
-              likeNums: tweet.Likes.length
-            }))
-            //return res.json({
-            //  currentUser: currentUser,
-            //  tweets: tweets,
-            //  totalNums: tweets.length,
-            //  LikeNums: currentUser.Likes.length,
-            //  FollowerNums: currentUser.Followers.length,
-            //  FollowingNums: currentUser.Followings.length,
-            //})
-
-            return res.render('user', {
-              currentUser: currentUser,
-              tweets: tweets,
-              totalNums: tweets.length,
-              LikeNums: currentUser.Likes.length,
-              FollowerNums: currentUser.Followers.length,
-              FollowingNums: currentUser.Followings.length,
-            })
-          })
-
-      })
-    }
   }
-
 
 }
 

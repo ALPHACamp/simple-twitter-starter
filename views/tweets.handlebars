@@ -13,14 +13,17 @@
       <div class="card col-md-10 shadow-sm mx-auto mt-3">
         <div class="row">
           <div class="col-4 text-center d-flex">
-            <img class="rounded mx-auto my-auto" width="120px" height="120px" src="#">
+            <img class="rounded mx-auto my-auto" src="{{this.User.avatar}}" width="120px" height="120px" src="#">
           </div>
           <div class="col-8 card-body">
-            <a href="/tweets/{{this.id}}">
+            <a href="/tweets/{{this.id}}/replies">
               <h5 class="card-text">@{{this.User.name}}, {{this.createdAt}}</h5>
             </a>
             <p class="card-text">{{this.description}}</p>
-            <h5><a href="/tweets/{{this.id}}/replies">Reply</a> <a href="#">Like</a></h5>
+            <h5>
+              <a class="mr-3" href="/tweets/{{this.id}}/replies">Reply ({{this.replyNums}})</a>
+              <a class="text-danger" href="#">Like({{this.likeNums}})</a>
+            </h5>
           </div>
         </div>
       </div>
@@ -36,7 +39,7 @@
       <div class="card col-md-10 shadow-sm mx-auto mt-3">
         <div class="row">
           <div class="col-5 text-center d-flex">
-            <img class="rounded mx-auto my-auto" width="100px" height="100px">
+            <img class="rounded mx-auto my-auto" src="{{this.avatar}}" width="100px" height="100px">
           </div>
           <div class="col-7 card-body">
             <a href="/users/{{this.id}}">
