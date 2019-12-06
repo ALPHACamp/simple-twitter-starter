@@ -77,6 +77,18 @@
         </div>
       </div>
       {{/each}}
+      <div class="col-md-10 mx-auto mt-3">
+        <form action="/tweets/{{tweet.id}}/replies" method="POST">
+          <div class="row shadow-sm">
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" style="border: none;"
+              name="comment"></textarea>
+          </div>
+          <div class="row mt-3">
+            <button type="submit" class="btn btn-primary ml-auto mr-4 text-dark font-weight-bold">Reply</button>
+          </div>
+        </form>
+      </div>
+
     </div>
   </div>
 </div>

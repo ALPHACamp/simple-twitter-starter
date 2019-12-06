@@ -18,7 +18,7 @@ let replyController = {
         UserId: helpers.getUser(req).id
       })
         .then((reply) => {
-          res.redirect(`/tweets/${req.body.tweetId}/replies`)
+          res.redirect(`/tweets/${req.params.tweetId}/replies`)
         })
     }
   },
