@@ -136,6 +136,7 @@ const userController = {
           .then((user) => {
             user.update({
               name: req.body.name,
+              introduction: req.body.introduction,
               avatar: file ? img.data.link : user.avatar,
             })
               .then((user) => {
@@ -149,6 +150,7 @@ const userController = {
         .then((user) => {
           user.update({
             name: req.body.name,
+            introduction: req.body.introduction,
             avatar: user.avatar,
           })
             .then((user) => {
