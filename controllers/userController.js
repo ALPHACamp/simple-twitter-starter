@@ -26,16 +26,23 @@ const userController = {
       // confirm unique user
       User.findOne({ where: { email: req.body.email } }).then(user => {
         if (user) {
-          req.flash('error_messages', '信箱重複！')
+          req.flash('error_messages', '用戶信箱重複！')
           return res.redirect('/signup')
         } else {
-          User.create({
-            name: req.body.name,
-            email: req.body.email,
-            password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null)
-          }).then(user => {
-            req.flash('success_messages', '成功註冊帳號！')
-            return res.redirect('/signin')
+          User.findOne({ where: { name: req.body.name } }).then(user => {
+            if (user) {
+              req.flash('error_messages', '用戶名稱重複！')
+              return res.redirect('/signup')
+            } else {
+              User.create({
+                name: req.body.name,
+                email: req.body.email,
+                password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null)
+              }).then(user => {
+                req.flash('success_messages', '成功註冊帳號！')
+                return res.redirect('/signin')
+              })
+            }
           })
         }
       })
@@ -88,7 +95,8 @@ const userController = {
             replyNums: tweet.Replies.length,
             likeNums: tweet.Likes.length,
             description: tweet.dataValues.description.substring(0, 140),
-            createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt)
+            createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
+            isLiked: helpers.getUser(req).Likes.map(d => d.TweetId).includes(tweet.id)
           }))
           return res.render('user', {
             currentUser: currentUser,
@@ -129,6 +137,7 @@ const userController = {
           .then((user) => {
             user.update({
               name: req.body.name,
+              introduction: req.body.introduction,
               avatar: file ? img.data.link : user.avatar,
             })
               .then((user) => {
@@ -142,6 +151,7 @@ const userController = {
         .then((user) => {
           user.update({
             name: req.body.name,
+            introduction: req.body.introduction,
             avatar: user.avatar,
           })
             .then((user) => {

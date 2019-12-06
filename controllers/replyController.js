@@ -18,7 +18,7 @@ let replyController = {
         UserId: helpers.getUser(req).id
       })
         .then((reply) => {
-          res.redirect(`/tweets/${req.body.tweetId}/replies`)
+          res.redirect(`/tweets/${req.params.tweetId}/replies`)
         })
     }
   },
@@ -33,7 +33,8 @@ let replyController = {
             { model: User, as: 'Followings' }
           ]
         },
-        { model: Reply, include: [User] }
+        { model: Reply, include: [User] },
+        Like
       ]
     }).then(tweet => {
       Tweet.findAndCountAll({
@@ -53,7 +54,7 @@ let replyController = {
             isFollowed = 'follow'
           }
         }
-        console.log(tweets)
+        let isLiked = helpers.getUser(req).Likes.map(d => d.TweetId).includes(tweet.id)
         return res.render('reply', {
           tweet: tweet,
           description: tweet.description.substring(0, 140),
@@ -64,7 +65,9 @@ let replyController = {
           followings: tweet.dataValues.User.Followings.length,
           followers: tweet.dataValues.User.Followers.length,
           tweetNums: tweets.count,
-          isFollowed: isFollowed
+          likeNums: tweet.Likes.length,
+          isFollowed: isFollowed,
+          isLiked: isLiked
         })
       })
     })

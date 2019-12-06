@@ -23,11 +23,11 @@
             <h5>
               <a class="mr-3" href="/tweets/{{this.id}}/replies">Reply ({{this.replyNums}})</a>
               {{#if this.isLiked }}
-              <form action="/tweets/{{this.id}}/unlike?_method=DELETE" method="POST" style="display: contents;"><button
-                  type="submit" class="btn btn-danger">like({{this.likeNums}})</button></form>
+              <form action="/tweets/{{this.id}}/unlike?_method=DELETE" method="POST" style="display: contents;">
+                <button type="submit" class="btn btn-danger">Unlike({{this.likeNums}})</button></form>
               {{else}}
               <form action="/tweets/{{this.id}}/like" method="POST" style="display: contents;"><button type="submit"
-                  class="btn btn-secondary">Unlike({{this.likeNums}})</button></form>
+                  class="btn btn-secondary">like({{this.likeNums}})</button></form>
               {{/if}}
             </h5>
           </div>
