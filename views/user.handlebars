@@ -50,7 +50,13 @@
               {{user.avatar}}</p>
             <h5>
               <a class="mr-3" href="/tweets/{{this.id}}/replies">Reply ({{this.replyNums}})</a>
-              <a class="text-danger" href="/tweets/{{this.id}}/likes">Like({{this.likeNums}})</a>
+              {{#if this.isLiked}}
+              <form action="/tweets/{{this.id}}/like?_method=DELETE" method="POST" style="display: contents;">
+                <button type="submit" class="btn btn-danger">Unlike</button></form>
+              {{else}}
+              <form action="/tweets/{{this.id}}/like" method="POST" style="display: contents;"><button type="submit"
+                  class="btn btn-primary">Like</button></form>
+              {{/if}}
             </h5>
           </div>
         </div>

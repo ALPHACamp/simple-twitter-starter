@@ -95,7 +95,8 @@ const userController = {
             replyNums: tweet.Replies.length,
             likeNums: tweet.Likes.length,
             description: tweet.dataValues.description.substring(0, 140),
-            createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt)
+            createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
+            isLiked: helpers.getUser(req).Likes.map(d => d.TweetId).includes(tweet.id)
           }))
           return res.render('user', {
             currentUser: currentUser,
