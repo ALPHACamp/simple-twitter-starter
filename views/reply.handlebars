@@ -19,13 +19,17 @@
         </h4>
         <h4>Like <a href="/users/{{tweet.User.id}}/likes" class="badge badge-secondary">{{likedTweets}}</a></h4>
         <div class="mt-3">
-          {{#if isFollowed }}
-          <form action="/followships/{{tweet.User.id}}?_method=DELETE" method="POST" style="display: contents;"><button
-              type="submit" class="btn btn-danger btn-lg btn-block">取消追蹤</button></form>
-          {{else}}
-          <form action="/followships/{{tweet.User.id}}" method="POST" style="display: contents;"><button type="submit"
-              class="btn btn-primary btn-lg btn-block">追蹤</button></form>
-          {{/if}}
+          {{#ifCond isFollowed "self"}}
+          <a href="/users/{{../tweet.User.id}}/edit" class="btn btn-primary btn-lg btn-block">Edit Profile</a>
+          {{/ifCond}}
+          {{#ifCond isFollowed "unfollow"}}
+          <form action="/followships/{{../tweet.User.id}}?_method=DELETE" method="POST" style="display: contents;">
+            <button type="submit" class="btn btn-danger">Unfollow</button></form>
+          {{/ifCond}}
+          {{#ifCond isFollowed "follow"}}
+          <form action="/followships/{{../tweet.User.id}}" method="POST" style="display: contents;"><button
+              type="submit" class="btn btn-primary">Follow</button></form>
+          {{/ifCond}}
         </div>
 
       </div>

@@ -43,6 +43,16 @@ let replyController = {
           ...reply.dataValues,
           createdAt: strftime('%Y-%m-%d, %H:%M', reply.dataValues.createdAt)
         }))
+        let isFollowed = ''
+        if (Number(tweet.dataValues.User.id) === Number(helpers.getUser(req).id)) {
+          isFollowed = 'self'
+        } else {
+          if (helpers.getUser(req).Followings.map(d => d.id).includes(tweet.dataValues.User.id)) {
+            isFollowed = 'unfollow'
+          } else {
+            isFollowed = 'follow'
+          }
+        }
         console.log(tweets)
         return res.render('reply', {
           tweet: tweet,
@@ -54,7 +64,7 @@ let replyController = {
           followings: tweet.dataValues.User.Followings.length,
           followers: tweet.dataValues.User.Followers.length,
           tweetNums: tweets.count,
-          isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(tweet.dataValues.User.id)
+          isFollowed: isFollowed
         })
       })
     })

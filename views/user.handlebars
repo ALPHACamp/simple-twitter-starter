@@ -19,7 +19,17 @@
         </h4>
         <h4>Like <a href="/users/{{profile.id}}/likes" class="badge badge-secondary">{{likedTweets}}</a></h4>
         <div class="mt-3">
-          <a href="/users/{{profile.id}}/edit" class="btn btn-primary btn-lg btn-block">Edit</a>
+          {{#ifCond isFollowed "self"}}
+          <a href="/users/{{../profile.id}}/edit" class="btn btn-primary btn-lg btn-block">Edit Profile</a>
+          {{/ifCond}}
+          {{#ifCond isFollowed "unfollow"}}
+          <form action="/followships/{{../profile.id}}?_method=DELETE" method="POST" style="display: contents;">
+            <button type="submit" class="btn btn-danger">Unfollow</button></form>
+          {{/ifCond}}
+          {{#ifCond isFollowed "follow"}}
+          <form action="/followships/{{../profile.id}}" method="POST" style="display: contents;"><button type="submit"
+              class="btn btn-primary">Follow</button></form>
+          {{/ifCond}}
         </div>
 
       </div>

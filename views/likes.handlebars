@@ -11,13 +11,19 @@
     <h5>Following {{followings}}</h5>
     <h5>Follower {{followers}}</h5>
     <h5>Like {{likedTweets}}</h5>
-    {{#if profile.isFollowed }}
-    <form action="/followships/{{profile.id}}?_method=DELETE" method="POST" style="display: contents;"><button
-        type="submit" class="btn btn-danger">取消追蹤</button></form>
-    {{else}}
-    <form action="/followships/{{profile.id}}" method="POST" style="display: contents;"><button type="submit"
-        class="btn btn-primary">追蹤</button></form>
-    {{/if}}
+    <div class="mt-3">
+      {{#ifCond isFollowed "self"}}
+      <a href="/users/{{../profile.id}}/edit" class="btn btn-primary btn-lg btn-block">Edit Prpfile</a>
+      {{/ifCond}}
+      {{#ifCond isFollowed "unfollow"}}
+      <form action="/followships/{{../profile.id}}?_method=DELETE" method="POST" style="display: contents;">
+        <button type="submit" class="btn btn-danger">Unfollow</button></form>
+      {{/ifCond}}
+      {{#ifCond isFollowed "follow"}}
+      <form action="/followships/{{../profile.id}}" method="POST" style="display: contents;"><button type="submit"
+          class="btn btn-primary">Follow</button></form>
+      {{/ifCond}}
+    </div>
   </div>
 
   <div class="col-md-9">
