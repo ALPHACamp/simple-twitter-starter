@@ -5,6 +5,7 @@ const db = require('../models')
 const User = db.User
 const Like = db.Like
 
+
 // setup passport strategy
 passport.use(new LocalStrategy(
   // customize user field
