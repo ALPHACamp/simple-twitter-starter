@@ -296,7 +296,7 @@ const userController = {
     return User.findByPk(req.params.id, {
       include: [
         Tweet,
-        { model: Like, include: [User, { model: Tweet, include: [Like, Reply] }] },
+        { model: Like, include: [User, { model: Tweet, include: [Like, Reply, User] }] },
         { model: User, as: "Followers" },
         { model: User, as: 'Followings' }
       ]
@@ -315,11 +315,12 @@ const userController = {
         ...like.dataValues,
         description: like.Tweet.description.substring(0, 100),
         createdAt: strftime('%Y-%m-%d, %H:%M', like.Tweet.createdAt),
-        userName: like.User.name,
+        userName: like.Tweet.User.name,
         replyNums: like.Tweet.Replies.length,
-        likeNums: like.Tweet.Likes.length
-      }))
-
+        likeNums: like.Tweet.Likes.length,
+        isLiked: like.Tweet.Likes.map(lik => lik.UserId).includes(helpers.getUser(req).id)
+      })).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+      console.log(helpers.getUser(req).Likes[0].Tweet)
       return res.render('likes', {
         profile: profile,
         tweetNums: profile.Tweets.length,
