@@ -201,27 +201,32 @@ const userController = {
         { model: User, as: 'Followings' }
       ]
     }).then(profile => {
-      profile.Followings = profile.Followings.map(following => ({
-        ...following.dataValues,
-        isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(following.id)
-      }))
-      let isFollowed = ''
-      if (Number(profile.id) === Number(helpers.getUser(req).id)) {
-        isFollowed = 'self'
-      } else {
-        if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
-          isFollowed = 'unfollow'
+      Followship.findAll({ where: { followerId: req.params.id } }).then((followships) => {
+        profile.Followings = profile.Followings.map(following => ({
+          ...following.dataValues,
+          isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(following.id),
+          createdAt: followships.find(element => element.followingId === following.id).createdAt
+        })).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+
+        let isFollowed = ''
+        if (Number(profile.id) === Number(helpers.getUser(req).id)) {
+          isFollowed = 'self'
         } else {
-          isFollowed = 'follow'
+          if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
+            isFollowed = 'unfollow'
+          } else {
+            isFollowed = 'follow'
+          }
         }
-      }
-      return res.render('followings', {
-        profile: profile,
-        tweetNums: profile.Tweets.length,
-        followers: profile.Followers.length,
-        followings: profile.Followings.length,
-        likedTweets: profile.Likes.length,
-        isFollowed: isFollowed
+        console.log(profile.Followings[0].createdAt)
+        return res.render('followings', {
+          profile: profile,
+          tweetNums: profile.Tweets.length,
+          followers: profile.Followers.length,
+          followings: profile.Followings.length,
+          likedTweets: profile.Likes.length,
+          isFollowed: isFollowed
+        })
       })
     })
   },
@@ -235,27 +240,31 @@ const userController = {
         { model: User, as: 'Followings' }
       ]
     }).then(profile => {
-      profile.Followers = profile.Followers.map(follower => ({
-        ...follower.dataValues,
-        isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(follower.id)
-      }))
-      let isFollowed = ''
-      if (Number(profile.id) === Number(helpers.getUser(req).id)) {
-        isFollowed = 'self'
-      } else {
-        if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
-          isFollowed = 'unfollow'
+      Followship.findAll({ where: { followingId: req.params.id } }).then((followships) => {
+        profile.Followers = profile.Followers.map(follower => ({
+          ...follower.dataValues,
+          isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(follower.id),
+          createdAt: followships.find(element => element.followerId === follower.id).createdAt
+        })).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+
+        let isFollowed = ''
+        if (Number(profile.id) === Number(helpers.getUser(req).id)) {
+          isFollowed = 'self'
         } else {
-          isFollowed = 'follow'
+          if (helpers.getUser(req).Followings.map(d => d.id).includes(profile.id)) {
+            isFollowed = 'unfollow'
+          } else {
+            isFollowed = 'follow'
+          }
         }
-      }
-      return res.render('followers', {
-        profile: profile,
-        tweetNums: profile.Tweets.length,
-        followers: profile.Followers.length,
-        followings: profile.Followings.length,
-        likedTweets: profile.Likes.length,
-        isFollowed: isFollowed
+        return res.render('followers', {
+          profile: profile,
+          tweetNums: profile.Tweets.length,
+          followers: profile.Followers.length,
+          followings: profile.Followings.length,
+          likedTweets: profile.Likes.length,
+          isFollowed: isFollowed
+        })
       })
     })
   },
