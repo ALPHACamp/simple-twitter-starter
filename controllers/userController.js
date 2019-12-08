@@ -302,14 +302,15 @@ const userController = {
           isFollowed = 'follow'
         }
       }
-      profile.Likes = profile.Likes.map((like) => ({
-        ...like.dataValues,
-        description: like.Tweet.description.substring(0, 100),
-        createdAt: strftime('%Y-%m-%d, %H:%M', like.Tweet.createdAt),
-        userName: like.User.name,
-        replyNums: like.Tweet.Replies.length,
-        likeNums: like.Tweet.Likes.length
-      }))
+      profile.Likes = profile.Likes.map((like) => (
+        {
+          ...like.dataValues,
+          description: like.Tweet === null ? null : like.Tweet.description.substring(0, 100),
+          createdAt: like.Tweet === null ? null : strftime('%Y-%m-%d, %H:%M', like.Tweet.createdAt),
+          userName: like.User.name,
+          replyNums: like.Tweet === null ? null : like.Tweet.Replies.length,
+          likeNums: like.Tweet === null ? null : like.Tweet.Likes.length
+        }))
 
       return res.render('likes', {
         profile: profile,
