@@ -1,16 +1,16 @@
 <div class="row my-5">
 
   <div class="col-md-3">
-    <div class="bg-white d-flex align-items-center justify-content-center" style="height: 150px; width:150px">
-      <img src="{{profile.avatar}}" alt="">
+    <div class="d-flex align-items-center justify-content-center">
+      <img class="rounded mx-auto my-auto" src="{{profile.avatar}}" width="240px" height="240px">
     </div>
 
     <h4 style="color:teal">{{profile.name}}</h4>
     <p style="word-wrap: break-word; color:rgb(128, 141, 155)">{{profile.introduction}}</p>
-    <h5>Tweets {{tweetNums}}</h5>
-    <h5>Following {{followings}}</h5>
-    <h5>Follower {{followers}}</h5>
-    <h5>Like {{likedTweets}}</h5>
+    <h5>Tweets <a href="/users/{{profile.id}}">{{tweetNums}}</a></h5>
+    <h5>Following <a href="/users/{{profile.id}}/followings">{{followings}}</a></h5>
+    <h5>Follower <a href="/users/{{profile.id}}/followers">{{followers}}</a></h5>
+    <h5>Like <a href="/users/{{profile.id}}/likes">{{likedTweets}}</a></h5>
     <div class="mt-3">
       {{#ifCond isFollowed "self"}}
       <a href="/users/{{../profile.id}}/edit" class="btn btn-primary btn-lg btn-block">Edit Profile</a>
@@ -33,7 +33,7 @@
       <div class="card col-md-5 shadow-sm mx-2 mt-3 ">
         <div class="row">
           <div class="col-5 text-center d-flex">
-            <img class="rounded mx-auto my-auto" width="100px" height="100px">
+            <img class="rounded mx-auto my-auto" src="{{this.avatar}}" width="100px" height="100px">
           </div>
           <div class="col-7 card-body">
             <a href="/users/{{this.id}}">
