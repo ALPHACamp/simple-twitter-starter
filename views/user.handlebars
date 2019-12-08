@@ -12,7 +12,7 @@
         <hr />
       </div>
       <div class="col-md-10 mx-auto mt-3">
-        <h4>Tweets <a href="/users/{{profile.id}}" class="badge badge-secondary">{{tweetNums}}</a></h4>
+        <h4>Tweets <a href="/users/{{profile.id}}/tweets" class="badge badge-secondary">{{tweetNums}}</a></h4>
         <h4>Following <a href="/users/{{profile.id}}/followings" class="badge badge-secondary">{{followings}}</a>
         </h4>
         <h4>Follower <a href="/users/{{profile.id}}/followers" class="badge badge-secondary">{{followers}}</a>
@@ -27,8 +27,9 @@
             <button type="submit" class="btn btn-danger">Unfollow</button></form>
           {{/ifCond}}
           {{#ifCond isFollowed "follow"}}
-          <form action="/followships/{{../profile.id}}" method="POST" style="display: contents;"><button type="submit"
-              class="btn btn-primary">Follow</button></form>
+          <form action="/followships" method="POST" style="display: contents;">
+            <input type="hidden" name="id" value="{{../profile.id}}">
+            <button type="submit" class="btn btn-primary">Follow</button></form>
           {{/ifCond}}
         </div>
       </div>

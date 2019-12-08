@@ -39,10 +39,10 @@ module.exports = (app, passport) => {
   app.post('/tweets', authenticated, tweetController.postTweet)
 
   // users routes
-  app.get('/users/:id/tweets', authenticatedAdmin, userController.getUser)
+  app.get('/users/:id/tweets', authenticated, userController.getUser)
   app.get('/users/:id/edit', authenticated, userController.editUser)
-  app.get('/users/:id', authenticated, userController.getUser)
-  app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+  //app.get('/users/:id', authenticated, userController.getUser)
+  app.post('/users/:id/edit', authenticated, upload.single('image'), userController.putUser)
 
 
   // reply routes
@@ -50,14 +50,14 @@ module.exports = (app, passport) => {
   app.post('/tweets/:tweetId/replies', authenticated, replyController.postReply)
 
   // followship routes
-  app.post('/followships/:followingId', authenticated, userController.addFollowing)
-  app.delete('/followships/:followingId', authenticated, userController.removeFollowing)
+  app.post('/followships', authenticated, userController.postFollowing)
+  app.delete('/followships/:followingId', authenticated, userController.deleteFollowing)
   app.get('/users/:id/followings', authenticated, userController.getFollowings)
   app.get('/users/:id/followers', authenticated, userController.getFollowers)
 
   // like routes
-  app.post('/tweets/:id/like', authenticated, userController.addLike)
-  app.delete('/tweets/:id/unlike', authenticated, userController.removeLike)
+  app.post('/tweets/:id/like', authenticated, tweetController.getLike)
+  app.delete('/tweets/:id/unlike', authenticated, tweetController.deleteLike)
   app.get('/users/:id/likes', authenticated, userController.getLikes)
 
   // admin routes
