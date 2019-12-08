@@ -45,6 +45,7 @@ let replyController = {
           createdAt: strftime('%Y-%m-%d, %H:%M', reply.dataValues.createdAt)
         }))
         let isFollowed = ''
+
         if (Number(tweet.dataValues.User.id) === Number(helpers.getUser(req).id)) {
           isFollowed = 'self'
         } else {
@@ -54,7 +55,8 @@ let replyController = {
             isFollowed = 'follow'
           }
         }
-        let isLiked = helpers.getUser(req).Likes.map(d => d.TweetId).includes(tweet.id)
+        //console.log(helpers.getUser(req).Likes.length)
+        let isLiked = helpers.getUser(req).Likes.length > 0 ? helpers.getUser(req).Likes.map(d => d.TweetId).includes(tweet.id) : null
         return res.render('reply', {
           tweet: tweet,
           description: tweet.description.substring(0, 140),

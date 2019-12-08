@@ -164,7 +164,7 @@ describe('# tweet request', () => {
     })
   })
 
-  xcontext('# like', () => {
+  context('# like', () => {
     describe('like first tweet', () => {
       before(async () => {
 
@@ -223,7 +223,7 @@ describe('# tweet request', () => {
 
       it('will redirect index', (done) => {
         request(app)
-          .post('/tweets/1/unlike')
+          .delete('/tweets/1/unlike')
           .set('Accept', 'application/json')
           .expect(302)
           .end(function (err, res) {
@@ -232,7 +232,7 @@ describe('# tweet request', () => {
           });
       })
       it('will delete like', (done) => {
-        db.Like.findOne({ where: { userId: 1 } }).then(like => {
+        db.Like.findOne({ where: { UserId: 1, TweetId: 1 } }).then(like => {
           expect(like).to.be.null
           done()
         })

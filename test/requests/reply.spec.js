@@ -18,7 +18,7 @@ describe('# reply request', () => {
         ).returns(true);
         this.getUser = sinon.stub(
           helpers, 'getUser'
-        ).returns({ id: 1, Followings: [] });
+        ).returns({ id: 1, Followings: [], Likes: [] });
 
         await db.User.destroy({ where: {}, truncate: true })
         await db.Tweet.destroy({ where: {}, truncate: true })
@@ -52,7 +52,7 @@ describe('# reply request', () => {
     })
   })
 
-  xcontext('#post', () => {
+  context('#post', () => {
     describe('POST /tweets/1/replies successfully', () => {
       before(async () => {
 

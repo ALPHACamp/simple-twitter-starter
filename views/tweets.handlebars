@@ -16,7 +16,7 @@
             <img class="rounded mx-auto my-auto" src="{{this.User.avatar}}" width="120px" height="120px" src="#">
           </div>
           <div class="col-8 card-body">
-            <a href="/tweets/{{this.id}}/replies">
+            <a href="/tweets/{{this.id}}/tweets">
               <h5 class="card-text">@{{this.User.name}}, {{this.createdAt}}</h5>
             </a>
             <p class="card-text">{{this.description}}</p>
@@ -48,17 +48,19 @@
             <img class="rounded mx-auto my-auto" src="{{this.avatar}}" width="100px" height="100px">
           </div>
           <div class="col-7 card-body">
-            <a href="/users/{{this.id}}">
+            <a href="/users/{{this.id}}/tweets">
               <h5 class="card-text">@{{this.name}}</h5>
             </a>
             <p class="card-text">{{this.introduction}}</p>
             <p>
               {{#if this.isFollowed }}
               <form action="/followships/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button
-                  type="submit" class="btn btn-danger">取消追蹤</button></form>
+                  type="submit" class="btn btn-danger">Unfollow</button></form>
               {{else}}
-              <form action="/followships/{{this.id}}" method="POST" style="display: contents;"><button type="submit"
-                  class="btn btn-primary">追蹤</button></form>
+              <form action="/followships" method="POST" style="display: contents;">
+                <input type="hidden" name="id" value="{{this.id}}">
+                <button type="submit" class="btn btn-primary">Follow</button>
+              </form>
               {{/if}}
             </p>
           </div>

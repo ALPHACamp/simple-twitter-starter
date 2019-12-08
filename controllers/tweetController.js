@@ -51,7 +51,33 @@ const tweetController = {
         req.flash('success_messages', 'Tweet was successfully created')
         return res.redirect('back')
       })
-  }
+  },
+
+  getLike: (req, res) => {
+    return Like.create({
+      UserId: helpers.getUser(req).id,
+      TweetId: req.params.id
+    })
+      .then(like => {
+        //console.log(like)
+        return res.redirect('back')
+      })
+  },
+
+  deleteLike: (req, res) => {
+    return Like.findOne({
+      where: {
+        UserId: helpers.getUser(req).id,
+        TweetId: req.params.id
+      }
+    }).then(like => {
+      //console.log(like)
+      like.destroy();
+      //console.log(like)
+      return res.redirect('back')
+
+    })
+  },
 
 }
 

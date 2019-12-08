@@ -89,14 +89,15 @@ const userController = {
               isFollowed = 'follow'
             }
           }
+          //console.log(tweets);
           tweets = tweets.map(tweet => ({
             ...tweet.dataValues,
             userName: profile.dataValues.name,
-            replyNums: tweet.Replies.length,
-            likeNums: tweet.Likes.length,
-            description: tweet.dataValues.description.substring(0, 140),
+            replyNums: tweet.Replies.length > 0 ? tweet.Replies.length : null,
+            likeNums: tweet.Likes.length > 0 ? tweet.Likes.length : null,
+            //description: tweet.dataValues.description.substring(0, 140),
             createdAt: strftime('%Y-%m-%d, %H:%M', tweet.dataValues.createdAt),
-            isLiked: helpers.getUser(req).Likes.map(d => d.TweetId).includes(tweet.id)
+            isLiked: tweet.Likes.length > 0 ? helpers.getUser(req).Likes.map(d => d.TweetId).includes(tweet.id) : null
           }))
           return res.render('user', {
             currentUser: currentUser,
@@ -162,22 +163,21 @@ const userController = {
     }
   },
 
-  addFollowing: (req, res) => {
-    if (Number(req.params.followingId) === Number(helpers.getUser(req).id)) {
-      console.log('if', req.params.followingId, helpers.getUser(req).id)
-      return res.redirect('back')
-    } else {
+  postFollowing: (req, res) => {
+    if (Number(req.body.id) !== Number(helpers.getUser(req).id)) {
+      //console.log('if', req.body.id, helpers.getUser(req).id)
       return Followship.create({
         followerId: helpers.getUser(req).id,
-        followingId: req.params.followingId
+        followingId: req.body.id
       }).then((followship) => {
-        console.log(helpers.getUser(req).id)
+        //console.log('success')
         return res.redirect('back')
       })
     }
+    return res.redirect('back')
   },
 
-  removeFollowing: (req, res) => {
+  deleteFollowing: (req, res) => {
     return Followship.destroy({
       where: {
         followerId: helpers.getUser(req).id,
@@ -269,29 +269,6 @@ const userController = {
     })
   },
 
-  addLike: (req, res) => {
-    return Like.create({
-      UserId: helpers.getUser(req).id,
-      TweetId: req.params.id
-    })
-      .then(tweet => {
-        return res.redirect('back')
-      })
-  },
-
-  removeLike: (req, res) => {
-    Like.destroy({
-      where: {
-        UserId: helpers.getUser(req).id,
-        TweetId: req.params.id
-      }
-    }).then(like => {
-
-      return res.redirect('back')
-
-    })
-  },
-
   getLikes: (req, res) => {
     return User.findByPk(req.params.id, {
       include: [
@@ -311,7 +288,6 @@ const userController = {
           isFollowed = 'follow'
         }
       }
-<<<<<<< HEAD
       profile.Likes = profile.Likes.map((like) => (
         {
           ...like.dataValues,
@@ -319,21 +295,10 @@ const userController = {
           createdAt: like.Tweet === null ? null : strftime('%Y-%m-%d, %H:%M', like.Tweet.createdAt),
           userName: like.User.name,
           replyNums: like.Tweet === null ? null : like.Tweet.Replies.length,
-          likeNums: like.Tweet === null ? null : like.Tweet.Likes.length
-        }))
+          likeNums: like.Tweet === null ? null : like.Tweet.Likes.length,
+          isLiked: like.Tweet.Likes.map(lik => lik.UserId).includes(helpers.getUser(req).id)
+        })).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
 
-=======
-      profile.Likes = profile.Likes.map((like) => ({
-        ...like.dataValues,
-        description: like.Tweet.description.substring(0, 100),
-        createdAt: strftime('%Y-%m-%d, %H:%M', like.Tweet.createdAt),
-        userName: like.Tweet.User.name,
-        replyNums: like.Tweet.Replies.length,
-        likeNums: like.Tweet.Likes.length,
-        isLiked: like.Tweet.Likes.map(lik => lik.UserId).includes(helpers.getUser(req).id)
-      })).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-      console.log(helpers.getUser(req).Likes[0].Tweet)
->>>>>>> c3d7574e9b7bd05e397620f8436a1854c1dd9d95
       return res.render('likes', {
         profile: profile,
         tweetNums: profile.Tweets.length,
