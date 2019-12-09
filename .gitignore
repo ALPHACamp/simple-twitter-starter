@@ -86,6 +86,6 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-config/config.json
+# config/config.json
 
 temp
