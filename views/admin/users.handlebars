@@ -18,6 +18,7 @@
         <td>Follower</td>
         <td>Following</td>
         <td>Like</td>
+        <td>#</td>
       </tr>
     </thead>
     <tbody>
@@ -29,6 +30,11 @@
         <td>{{this.Followers.length}}</td>
         <td>{{this.Followings.length}}</td>
         <td>{{this.Likes.length}}</td>
+        <td>
+          <form action="/admin/users/{{this.id}}?_method=DELETE" method="POST">
+            <button class="btn btn-danger">Delete</button>
+          </form>
+        </td>
       </tr>
       {{/each}}
     </tbody>

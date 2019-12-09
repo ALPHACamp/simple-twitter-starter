@@ -35,7 +35,8 @@ app.use('/upload', express.static(__dirname + '/upload'))
 // use helpers.ensureAuthenticated(req) to replace req.isAuthenticated()
 
 require('./routes')(app, passport)
-module.exports = app
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
+module.exports = app
 

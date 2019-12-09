@@ -218,7 +218,7 @@ const userController = {
             isFollowed = 'follow'
           }
         }
-        console.log(profile.Followings[0].createdAt)
+        //console.log(profile.Followings[0].createdAt)
         return res.render('followings', {
           profile: profile,
           tweetNums: profile.Tweets.length,
