@@ -1,8 +1,10 @@
 const db = require('../../models')
+const helpers = require('../../_helpers')
 const Tweet = db.Tweet
 const User = db.User
 const Reply = db.Reply
 const Like = db.Like
+
 
 const adminController = {
   getTweets: (req, res) => {
@@ -36,6 +38,19 @@ const adminController = {
     return Tweet.findByPk(req.params.id).then(tweet => {
       tweet.destroy();
       return res.redirect('/admin/tweets')
+    })
+  },
+
+  deleteUsers: (req, res) => {
+    if (Number(req.params.id) === Number(helpers.getUser(req).id)) {
+      console.log('no', Number(req.params.id))
+      req.flash('error_messages', `You are cannot delete yourself`)
+      return res.redirect('back')
+    }
+    return User.findByPk(req.params.id).then(user => {
+      user.destroy();
+      req.flash('success_messages', `You deleted ${user.name}`)
+      return res.redirect('/admin/users')
     })
   }
 }

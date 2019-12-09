@@ -64,4 +64,5 @@ module.exports = (app, passport) => {
   app.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
   app.delete('/admin/tweets/:id', authenticatedAdmin, adminController.deleteTweets)
   app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
+  app.delete('/admin/users/:id', authenticatedAdmin, adminController.deleteUsers)
 }

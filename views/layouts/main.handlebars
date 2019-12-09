@@ -18,10 +18,10 @@
       </ul>
       <div>
         {{#ifCond user.role 'Admin'}}
-          <a href="/admin/tweets" style="color: white;margin-right: 10px;">Admin </a>
+        <a href="/admin/tweets" style="color: white;margin-right: 10px;">Admin </a>
         {{/ifCond}}
         {{#if user}}
-        <a href="/users/{{user.id}}" style="color: white;margin-right: 10px;">
+        <a href="/users/{{user.id}}/tweets" style="color: white;margin-right: 10px;">
           <img class="rounded mx-auto my-auto" src="{{user.avatar}}" height="38px">
         </a>
         <a href="/logout"><button class="btn btn-outline-success my-2 my-sm-0">LogOut</button></a>
@@ -34,14 +34,14 @@
     <div class="py-5 bg-light">
       <div class="container">
         {{#if success_messages}}
-          <div class="alert alert-success" role="alert" style="margin: 30px 0 ;">
-            {{success_messages}}
-          </div>
+        <div class="alert alert-success" role="alert" style="margin: 30px 0 ;">
+          {{success_messages}}
+        </div>
         {{/if}}
         {{#if error_messages}}
-          <div class="alert alert-danger" role="alert" style="margin: 30px 0 ;">
-            {{error_messages}}
-          </div>
+        <div class="alert alert-danger" role="alert" style="margin: 30px 0 ;">
+          {{error_messages}}
+        </div>
         {{/if}}
         {{{body}}}
       </div>
