@@ -1,0 +1,81 @@
+<aside class="col-5 col-md-3">
+  {{> userProfile}}
+</aside>
+<main class="col-7 col-md-9 pl-5">
+  {{!-- Tweet --}}
+  <section>
+    <h3>Tweet</h3>
+    <article>
+      <div class="card mb-3">
+        <div class="row no-gutters">
+          <div class="col-md-4 ">
+            <a href="/users/{{showedUser.id}}/tweets">
+              <img src="{{showedUser.avatar}}" class="card-img" alt="avatar">
+            </a>
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">
+                <a href="/users/{{showedUser.id}}/tweets">@{{showedUser.name}}</a>
+                <small class="text-muted" title="{{showedTweet.date}}">{{showedTweet.time}}</small>
+              </h5>
+              <p class="card-text">{{showedTweet.description}}</p>
+              <div class="d-flex align-items-center">
+                <a href="/tweets/{{showedTweet.id}}/replies">Reply({{showedTweet.countReplies}})</a>
+                {{#if showedTweet.isLiked}}
+                  <form action="/tweets/{{showedTweet.id}}/unlike" method="POST" class="d-inline-block">
+                    <button type="submit" class="btn btn-link btn-fas"><i class="fas fa-heart"></i>   ({{showedTweet.countLikes}})
+                    </button>
+                  </form>
+                {{else}}
+                  <form action="/tweets/{{showedTweet.id}}/like" method="POST" class="d-inline-block">
+                    <button type="submit" class="btn btn-link btn-far"><i class="far fa-heart"></i>   ({{showedTweet.countLikes}})
+                    </button>
+                  </form>
+                {{/if}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+  {{!-- Replies --}}
+  <section>
+    <h3>Replies</h3>
+    {{#each replies}}
+      <article>
+        <div class="card mb-3">
+          <div class="row no-gutters">
+            <div class="col-md-4 ">
+              <a href="/users/{{this.UserId}}/tweets">
+                <img src="{{this.User.avatar}}" class="card-img" alt="avatar">
+              </a>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <a href="/users/{{this.UserId}}/tweets">@{{this.User.name}}</a>
+                  <small class="text-muted" title="{{this.date}}">{{this.time}}</small>
+                </h5>
+                <p class="card-text">{{this.comment}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    {{/each}}
+  </section>
+  {{!-- Reply Form --}}
+  <section>
+    <form action="/tweets/{{showedTweet.id}}/replies" method="POST">
+      <div class="form-group">
+        <textarea class="form-control" name="comment" id="comment" rows="4" required>{{history}}</textarea>
+      </div>
+      <input type="hidden" name="TweetId" value="{{showedTweet.id}}">
+      <div class="text-right">
+        <button type="submit" class="btn btn-primary">Reply</button>
+      </div>
+    </form>
+  </section>
+</main>
