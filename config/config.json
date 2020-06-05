@@ -4,20 +4,22 @@
     "password": "password",
     "database": "ac_twitter_workspace",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "operatorsAliases": false
   },
   "test": {
     "username": "travis",
     "database": "ac_twitter_workspace_test",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "logging" : false
+    "logging": false
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "use_env_variable": "CLEARDB_DATABASE_URL",
+    "username": "bc07201efc9b46",
+    "password": "fafe9d4e",
+    "database": "heroku_db7a4c4fe38de4f",
+    "host": "us-cdbr-iron-east-01.cleardb.net",
     "dialect": "mysql"
   }
 }
