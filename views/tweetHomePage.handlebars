@@ -1,0 +1,179 @@
+<style>  
+  @media (max-width: 530px) {
+    #CheckIn {
+      width: 111px;
+    }
+  }
+  @media (max-width: 410px) {
+    #CheckIn {
+      width: 56px;
+    }    
+  }
+  @media (max-width: 370px) {
+    #label {
+      width: 59px;
+    }
+  }
+</style>
+
+<div class="row pt-3 pt-sm-0">
+  <div class="col-7">
+    <form action="/tweets" method="POST">
+
+      <div class="form-group mb-1">
+        <textarea class="form-control border-info" id="description" name="description" rows="4"
+          placeholder="What's on your mind ?" required></textarea>
+      </div>
+
+      <div class="inputs d-flex justify-content-between">
+
+        <div class="location pl-1 pl-sm-2 pt-md-1 col-8">
+          <span id="label" class="badge badge-dark">Check-in Here</span>
+          <input id="CheckIn" name="CheckIn" placeholder="Where are you now?">
+        </div>
+
+        <div class="tweet d-flex justify-content-end col-4">
+          <input type="hidden" id="userId" name="userId" value="{{user.id}}">
+          <button type="submit" onclick="sendMessage()"
+            class="btn btn-info text-dark font-weight-bold my-1 my-md-1 submit p-1">Tweet</button>
+        </div>
+
+      </div>
+
+    </form>
+
+    <div class="tweets pt-1">
+      {{#each tweets}}
+      <div class="card my-2">
+        <div class="card-body row">
+          <div class="col-md-4 pr-0">
+            <a href="/users/{{this.User.id}}/tweets"><img src="{{this.User.avatar}}" class="card-img mt-2 border"
+                width="100" min-height="75" alt="avatar"></a>
+          </div>
+          <div class="col-md-8">
+            <label>
+              <h6 class="card-title text-primary">
+                <a href="/users/{{this.User.id}}/tweets">@{{this.User.name}}</a>
+                , {{moment this.updatedAt}}
+              </h6>
+            </label>
+
+            <p>{{this.description}}</p>
+
+            <div class="row ml-0 links">
+              <a href="/tweets/{{this.id}}/replies" style="line-height: 27px;">
+                Reply({{#count this.Replies}}{{/count}})
+              </a>
+
+              {{#if this.isLiked}}
+              <form action="/tweets/{{this.id}}/unlike?_method=DELETE" method="POST"
+                class="ml-2 text-success d-inline w-25" style="line-height: 25px;">
+                <button type="submit" class="text-success p-0 bg-white btn btn-link">
+                  Unlike({{#count this.Likes}}{{/count}})
+                </button>
+              </form>
+              {{else}}
+              <form action="/tweets/{{this.id}}/like" method="POST" class="ml-2 text-danger d-inline w-25"
+                style="line-height: 25px;">
+                <button type="submit" class="text-danger p-0 bg-white btn btn-link">
+                  Like({{#count this.Likes}}{{/count}})
+                </button>
+              </form>
+              {{/if}}
+
+              {{#if this.CheckIn}}
+              <a class="text-info" href="https://maps.google.com/?q={{this.CheckIn}}" target="_blank"
+                style="line-height: 30px;">@ {{this.CheckIn}}
+              </a>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="col-5 px-0">
+    <h2 class="text-info ml-2">Popular</h2>
+
+    {{#each users}}
+    <div class="card mb-3" style="max-width: 540px;">
+      <div class="row no-gutters">
+        <div class="col-11 col-md-4 p-1">
+          <a href="/users/{{this.id}}/tweets">
+            <img src="{{this.avatar}}" class="card-img mt-4 ml-2 border" width="100" min-height="75" alt="avatar">
+          </a>
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <a href="/users/{{this.id}}/tweets">
+              <h5 class="card-title">
+                @{{this.name}}
+              </h5>
+            </a>
+            <p class="card-text">{{this.introduction}}</p>
+            <div class="button button d-flex justify-content-end">
+              {{#ifCond ../user.id this.id}}
+                {{!-- display: none --}}
+              {{else}}
+                {{#if this.isFollowed}}
+                <form action="/followships/{{this.id}}?_method=DELETE" method="POST" style="display: inline">
+                  <button type="submit" class="btn btn-warning font-weight-bold" style="width: 90px">Unfollow</button>
+                </form>
+                {{else}}
+                <form action="/followships" method="POST" style="display: inline">
+                  <input type="hidden" name="id" value="{{this.id}}">
+                  <button type="submit" class="btn btn-info font-weight-bold text-dark"
+                    style="width: 90px">Follow</button>
+                </form>
+                {{/if}}
+              {{/ifCond}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+
+  </div>
+</div>
+
+<script>
+  function initMap() {
+    const input = document.getElementById('CheckIn')
+    const autocomplete = new google.maps.places.Autocomplete(input)
+
+    autocomplete.addListener('place_changed', function () {
+      var place = autocomplete.getPlace()
+      if (!place.geometry) {
+        // User entered the name of a Place that was not suggested and
+        // pressed the Enter key, or the Place Details request failed.
+        window.alert("No details available for input: '" + place.name + "'")
+        return
+      }
+    })
+  }
+
+  // 設定輸入字數提示與上限，超過時鎖按鈕直到字數低於上限
+  description.addEventListener('input', function (event) {
+    const description = document.querySelector('#description')
+    const submit = document.querySelector('.submit')
+    if (event.target.id === 'description') {
+      let count = event.target.value.length
+      if (count >= 0 && count <= 140) {
+        submit.innerHTML = `Tweet`
+        submit.disabled = false
+      } else {
+        submit.innerHTML = `字數超過！`
+        submit.disabled = true
+      }
+    }
+  })
+
+</script>
+
+<script class="api-key" src="https://maps.googleapis.com/maps/api/js?key={{apiKey}}&libraries=places&callback=initMap"
+  async defer>
+  //因為收到 Github 通知不要暴露 API Key 在 Github 中，這邊先把 API Key 拿下來，大家要用時可再放上
+  </script>
