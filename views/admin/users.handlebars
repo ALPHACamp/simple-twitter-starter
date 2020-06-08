@@ -1,0 +1,81 @@
+<div class="admin-user">
+  <ul class="sidebar">
+    <li><a href="/admin/tweets"><i class="far fa-newspaper"></i>Tweets</a></li>
+    <li class="active"><a href="/admin/users"><i class="far fa-id-card"></i>Users</a></li>
+  </ul>
+  <div class="main-content">
+    <div class="results">
+      <table class="table">
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">User Name</th>
+          <th scope="col">User Email</th>
+          <th scope="col">Tweets</th>
+          <th scope="col">Followings</th>
+          <th scope="col">Followers</th>
+          <th scope="col">Likes</th>
+        </tr>
+
+        {{#each users}}
+        <tr>
+          <th scope="row">{{this.id}}</th>
+          <td>
+            <a href="/users/{{this.id}}/tweets">
+              {{this.name}}
+            </a>
+          </td>
+          <td>
+            <a href="/users/{{this.id}}/tweets">
+              {{this.email}}
+            </a>
+          </td>
+
+          <td>
+            <a href="/users/{{this.id}}/tweets">
+              {{this.Tweets.length}}
+            </a>
+          </td>
+
+          <td>
+            <a href="/users/{{this.id}}/followings">
+              {{this.Followings.length}}
+            </a>
+          </td>
+
+          <td>
+            <a href="/users/{{this.id}}/followers">
+              {{this.Followers.length}}
+            </a>
+          </td>
+
+          <td>
+            <a href="/users/{{this.id}}/like">
+              {{this.LikedTweets.length}}
+            </a>
+          </td>
+        </tr>
+        {{/each}}
+
+      </table>
+      <ul>
+        <li>
+          <a href="/admin/users?page={{prev}}" aria-label="Previous">
+            <span aria-hidden="true">«</span>
+          </a>
+        </li>
+        {{#each totalPage}}
+        {{#ifCond this ../page}}
+        <li><a class="page-active" href="#">{{this}}</a></li>
+        {{else}}
+        <li><a href="/admin/users?page={{this}}">{{this}}</a></li>
+        {{/ifCond}}
+        {{/each}}
+        <li>
+          <a href="/admin/users?page={{next}}" aria-label="Next">
+            <span aria-hidden="true">»</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

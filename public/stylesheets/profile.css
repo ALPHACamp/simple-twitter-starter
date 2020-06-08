@@ -1,0 +1,181 @@
+/* for followers and followings handlebars*/
+.profile-bg {
+  background-image: url(https://picsum.photos/1440/400);
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 400px;
+}
+
+.user-profile-page {
+  min-width: 1000px;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+.user-profile-page > .profile-header {
+  display: block;
+  height: 100%;
+  width: 1440px;
+  position: relative;
+  justify-content: center;
+}
+
+.profile-nav {
+  min-width: 800px;
+  max-width: 100%;
+  background-color: white;
+  font-size: 14px;
+  border-bottom: 1px solid #dddfe2;
+}
+
+.profile-nav > .left {
+  display: inline-block;
+  width: 42%;
+}
+
+.profile-avatar {
+  border-radius: 50%;
+  height: 250px;
+  width: 250px;
+  background-size: cover;
+  border: 6px solid #fff;
+  position: absolute;
+  top: -260px;
+  background-color: var(--bgColor);
+}
+
+.profile-nav > .right {
+  display: inline-block;
+  width: 50%;
+}
+
+.profile-nav > .right > .right-list {
+  display: flex;
+}
+
+.profile-nav > .right > .right-list > .item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.profile-nav > .right > .right-list > .item:nth-child(1) > a {
+  border-left: 1px solid #dddfe2;
+}
+
+.profile-nav > .right > .right-list > .item > a {
+  border-right: 1px solid #dddfe2;
+  padding: 10px 15px;
+  color: var(--hoverColorDark);
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.profile-nav > .right > .right-list > .item > a > span {
+  color: var(--Grey);
+  font-weight: 100;
+  font-size: 14px;
+  padding-left: 3px;
+}
+
+.float-right {
+  float: right;
+}
+
+.profile-show {
+  width: 890px;
+  margin: auto;
+  padding: 30px 0px;
+  display: flex;
+  position: relative;
+}
+
+.profile-info {
+  padding: 20px;
+  display: inline-block;
+  vertical-align: top;
+  width: 340px;
+  margin-right: 16px;
+  height: fit-content;
+  background-color: #fff;
+}
+
+.profile-show > .show-tweets {
+  display: inline-block;
+  width: 60%;
+  width: 534px;
+}
+
+.profile-show > .show-tweets > .tweets-content {
+  background-color: #e8f5fd;
+  padding: 15px;
+  border-bottom: 1px solid var(--bgColor);
+}
+
+.profile-show > .show-tweets > .individual-tweet {
+  height: fit-content;
+  position: relative;
+  background-color: white;
+  border-bottom: 1px solid var(--bgColor);
+  padding: 10px 15px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.profile-show > .show-tweets > .individual-tweet > .col-left,
+.col-right {
+  padding: 10px;
+}
+
+.profile-tweet-description {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.profile-tweets-reaction {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.profile-info-edit {
+  padding: 50px;
+  text-align: center;
+}
+
+.info-edit {
+  display: inline-block;
+}
+
+.edit-data {
+  margin: 10px 0;
+}
+
+.edit-label {
+  display: inline-block;
+  width: 100%;
+}
+
+.user-profile-page
+  > .profile-show
+  > .show-tweets
+  > .individual-tweet
+  > .col-right
+  > .profile-tweets-reaction
+  > a {
+  font-size: 14px;
+  color: var(--Grey);
+  margin-right: 30px;
+  border: none;
+  cursor: pointer;
+}
+
+.profile-follow-button {
+  position: absolute;
+  top: -90px;
+  right: 0px;
+}

@@ -1,0 +1,108 @@
+<div class="home-page">
+  <div class="home-col-left">
+    <div class="add-tweets">
+      <div class="avatar">
+        <div style="background-image:url({{currentUser.avatar}})" class="avatar40px"></div>
+      </div>
+      <div class="tweets-content">
+        <form action="/tweets" method="POST">
+          <textarea type="text" rows="4" name="tweet" placeholder="有什麼新鮮事？" id="tweetInput" required>
+          </textarea>
+          <input type="hidden" name="UserId" value="{{currentUser.id}}" />
+          <span class="feedback">140</span>
+          <div class="bottom-option">
+            <button class="Button-primary Button-Tweet disabled" id="tweetButton" disabled>Tweet</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="view-tweets">
+      {{#each tweets}}
+      <div class="individual-tweet">
+        <div class='user-action' data-id="{{this.id}}"><i class=" fas fa-ellipsis-h"></i></div>
+        <ul class="action-click-option" data-id="{{this.id}}">
+          {{#ifCond this.User.id ../currentUser.id}}
+
+          <li class="deleteTweet" data-id="{{this.id}}">刪除推文</li>
+          <li class="editTweet" data-id="{{this.id}}">編輯推文</li>
+          {{else}}
+          <li class="savaTweet" data-id="{{this.id}}">收藏推文</li>
+          {{/ifCond}}
+        </ul>
+
+        <div class="col-left">
+          <div style="background-image:url({{this.User.avatar}})" class="avatar50px">
+          </div>
+        </div>
+        <div class="col-right">
+          <div class="tweet-info">
+            <a href="/users/{{this.User.id}}/tweets">@{{this.User.name}}</a>
+            <span>．{{moment this.createdAt}}</span>
+          </div>
+          <p>{{this.description}}</p>
+          <div class="reaction">
+            <a href="/tweets/{{this.id}}/replies">
+              {{#if isReplied}}
+              <i class="fas fa-comment"></i>
+              {{else}}
+              <i class="far fa-comment"></i>
+              {{/if}}
+              &nbsp;&nbsp;{{this.Replies.length}}</a>
+            {{#if isLiked}}
+            <form action="/tweets/{{this.id}}/unlike" method="POST">
+              <button type="submit"><i class="fas fa-heart"></i>
+                {{else}}
+                <form action="/tweets/{{this.id}}/like" method="POST">
+                  <button type="submit"><i class="far fa-heart"></i>
+                    {{/if}}
+                    &nbsp;&nbsp;{{this.LikedUsers.length}}</button>
+                </form>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="home-col-right">
+    <div class="title">Popular&nbsp;<i class="fas fa-fire"></i></div>
+    {{#each popularUser}}
+    <div class="user-list">
+      <div class="col-left">
+        <div style="background-image:url({{this.avatar}})" class="avatar70px">
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="tweet-info">
+          <a href="/users/{{this.id}}/tweets">@{{this.name}}</a>
+        </div>
+        <p>{{this.introduction}}</p>
+        {{#ifCond this.id ../currentUser.id}}
+        <form action=''>
+          <button type="submit" class="Button-secondary disabled" disabled='disabled'>Follow</button>
+        </form>
+        {{else}}
+        {{#if isFollowed}}
+        <form action="/followships/{{this.id}}?_method=DELETE" method="POST">
+          <button type="submit" class="Button-primary">Unfollow</button>
+        </form>
+        {{else}}
+        <form action="/followships" method="POST">
+          <input type="hidden" name="id" value="{{this.id}}">
+          <button type="submit" class="Button-secondary">Follow</button>
+        </form>
+        {{/if}}
+        {{/ifCond}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+<div class="alert-box" style="display: none;     justify-content: center;
+">
+
+</div>
+
+<script src="/javascripts/tweet.js"></script>
+<script src="/javascripts/tweetAction.js"></script>

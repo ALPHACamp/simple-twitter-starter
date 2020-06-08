@@ -1,0 +1,361 @@
+@charset "UTF-8";
+/* 常用顏色、字體等等*/
+@import url('https://fonts.googleapis.com/css?family=Kaushan+Script&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:400,600,700&display=swap');
+:root {
+  --darkBlue: #3495e0;
+  --lightBlue: #38a1f2;
+  --border: 1px solid #38a1f2;
+  --buttonPadding: 10px 30px;
+  --hoverColorDark: #2a77b3;
+  --hoverColorLight: #e4f7fc;
+  --bgColor: #e6ecf0;
+  --Grey: #66757f;
+  --generalWord: 'Libre Franklin', sans-serif;
+  --titleWord: 'Kaushan Script', cursive;
+}
+
+.dark-bg {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 20;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+/* 常用按鈕樣式 */
+
+.Button-Tweet {
+  /*專屬tweet字樣按鈕的設定*/
+  padding: 6px 16px !important;
+  position: relative;
+  line-height: 20px;
+  font-weight: bold;
+}
+
+.Button-primary {
+  background-color: #4ab3f4;
+  color: #fff;
+  border-radius: 100px;
+  cursor: pointer;
+  padding: 4px 14px;
+  font-size: 16px;
+  width: 95px;
+}
+
+.Button-primary:hover {
+  background-color: var(--hoverColorDark);
+}
+
+.Button-secondary {
+  background-color: #fff;
+  color: #4ab3f4;
+  border: 1px solid #4ab3f4;
+  border-radius: 100px;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 14px;
+  width: 95px;
+}
+
+.Button-secondary:hover {
+  background-color: var(--hoverColorLight);
+}
+
+.Button-Login-Signup {
+  /*刻意避開顏色沒有設定*/
+  border: var(--border);
+  width: -webkit-fill-available;
+  border-radius: 100px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 20px;
+  padding: 6px 0px;
+  text-align: center;
+}
+
+/*各種尺寸的大頭貼*/
+.avatar70px {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.avatar50px {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.avatar40px {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* 常用設定 */
+.active {
+  border-right: 2px solid var(--lightBlue);
+  background-color: var(--hoverColorLight);
+}
+
+.active a {
+  color: var(--lightBlue) !important;
+}
+
+.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.alert {
+  border-bottom: 2px solid red !important;
+}
+
+.message {
+  color: red;
+  background: #fff;
+  height: 35px;
+}
+
+.user-action {
+  position: absolute;
+  right: 15px;
+  top: 5px;
+  cursor: pointer;
+  color: var(--Grey);
+}
+.user-action:hover {
+  color: #000;
+}
+
+.action-click-option {
+  background-clip: padding-box;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  right: 15px;
+  padding: 5px 0px;
+  top: 25px;
+  display: none;
+}
+
+.action-click-option > li {
+  cursor: pointer;
+  border: solid #fff;
+  border-width: 1px 0;
+  color: #1d2129;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  line-height: 24px;
+  padding: 0px 10px;
+}
+
+.action-click-option > li:hover {
+  background-color: var(--hoverColorLight);
+}
+
+.delete-box {
+  width: 300px;
+  border-radius: 3px;
+  box-shadow: 0 2px 26px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  background-color: #fff;
+  padding: 10px;
+}
+
+.delete-box > form > div:nth-child(2) {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.delete-confirm {
+  display: flex;
+  justify-content: center;
+  top: 40%;
+  position: fixed;
+  z-index: 30;
+  width: inherit;
+}
+
+/*Basic Setting*/
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  padding: 0px;
+  margin: 0px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  background-color: var(--bgColor);
+  font-family: var(--generalWord);
+}
+
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0px;
+  padding: 0px;
+}
+
+ul,
+ol {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+a,
+a:hover,
+a:focus {
+  text-decoration: none;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.container {
+  width: 890px;
+  max-width: 1170px;
+  margin: 0 auto;
+  position: relative;
+}
+
+input,
+button,
+select,
+textarea {
+  outline: none;
+}
+
+*:focus {
+  outline: none;
+}
+
+.alert-danger {
+  width: 100%;
+  color: red;
+  padding-left: 5px;
+}
+
+/* navbar */
+nav {
+  position: fixed;
+  width: 100%;
+  background-color: #fff;
+  z-index: 10;
+}
+
+.inner-navbar {
+  max-width: 890px;
+  width: 890px;
+  margin: auto;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 180px 1fr 270px;
+  grid-template-columns: 180px 1fr 270px;
+  -ms-grid-rows: 48px;
+  grid-template-rows: 48px;
+  grid-template-areas: 'logo . option';
+  color: var(--Grey);
+}
+
+.inner-navbar > .logo {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  grid-area: logo;
+  color: inherit;
+  margin: auto;
+  font-size: 20px;
+  font-family: var(--titleWord);
+}
+
+.inner-navbar > .option {
+  -ms-grid-row: 1;
+  -ms-grid-column: 3;
+  grid-area: option;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+  -ms-grid-rows: 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: 'admin user logout';
+}
+
+.inner-navbar > .option > li {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.inner-navbar > .option > li:nth-child(1) {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  grid-area: admin;
+}
+
+.inner-navbar > .option > li:nth-child(2) {
+  -ms-grid-row: 1;
+  -ms-grid-column: 2;
+  grid-area: user;
+}
+
+.inner-navbar > .option > li:nth-child(3) {
+  -ms-grid-row: 1;
+  -ms-grid-column: 3;
+  grid-area: logout;
+}
+
+.inner-navbar > .option > li > a {
+  color: inherit;
+  height: inherit;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 5px;
+  font-size: 15px;
+}
+
+.inner-navbar > .option > li > a > i {
+  margin-right: 5px;
+}
+
+.inner-navbar > .option > li > a:hover {
+  color: var(--lightBlue);
+  border-bottom: 2px solid var(--lightBlue);
+  -webkit-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+}
