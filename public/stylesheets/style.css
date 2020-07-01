@@ -1,0 +1,172 @@
+.tweet-post {
+  max-width: 340px;
+}
+
+.button-nofunny {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+.a-block {
+  display: block;
+}
+
+.popular-text {
+  font-size: 14px;
+}
+
+.text-truncate-multiple-lines {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-height: 50px;
+}
+
+img:hover {
+  animation-name: darker;
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
+  animation-fill-mode: both;
+}
+
+@keyframes darker {
+  0% {
+    filter: brightness(100%);
+  }
+  100% {
+    filter: brightness(80%);
+  }
+}
+
+.select-card:hover {
+  animation-name: lightgray;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+@keyframes lightgray {
+  0% {
+    background-color: white;
+  }
+  100% {
+    background-color: rgb(245, 245, 245);
+  }
+}
+
+#popularField {
+  display: none;
+}
+
+.text-form {
+  font-size: 20px;
+  margin: auto;
+  resize: none;
+}
+
+#twitterLogo {
+  display: block;
+  border-radius: 100px;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+#avatarProfile {
+  display: block;
+  border-radius: 100px;
+  margin: auto;
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+}
+
+#avatarFollow {
+  display: block;
+  border-radius: 100px;
+  margin: auto;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+#avatarTweet {
+  display: block;
+  border-radius: 100px;
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+#avatarPopular {
+  display: block;
+  border-radius: 100px;
+  margin: 0px -5px 0px 0px;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+#avatarProfileLg {
+  display: block;
+  border-radius: 100px;
+  margin: auto;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+
+.listVertical {
+  display: block;
+}
+
+.cardFollowText {
+  font-size: 14px;
+  width: 150px;
+  margin: auto;
+}
+
+.container-width {
+  width: 21rem;
+}
+
+.container-widthAdmin {
+  width: 100rem;
+}
+
+@media screen and (min-width: 576px) {
+  #avatarTweet {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  #avatarTweet {
+    width: 60px;
+    height: 60px;
+  }
+  .tweet-post {
+    max-width: 500px;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  #popularField {
+    display: block;
+  }
+  .tweet-post {
+    max-width: 450px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+}

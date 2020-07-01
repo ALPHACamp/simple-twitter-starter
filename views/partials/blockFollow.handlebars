@@ -1,0 +1,33 @@
+<div class="col-6">
+  <div class="card mb-1 mx-1 select-card">
+    <div class="card-body" onclick="location.href='/users/{{id}}/tweets'" style="cursor: pointer;">
+      <div class="row no-gutters">
+        {{!-- 大頭照 --}}
+        <div class="col-lg-4">
+          <a href="/users/{{id}}/tweets">
+            <img src={{avatar}} alt="avatar" id="avatarFollow">
+          </a>
+        </div>
+        {{!-- 簡介內容 --}}
+        <div class="col mt-2 text-center">
+          <h6 class="card-subtitle my-2 text-muted">@{{name}}</h6>
+          <p class="card-text card-follow-text text-truncate-multiple-lines">{{introduction}}</p>
+          {{#if userSelf}}
+            <div style="height: 31px;"></div>
+          {{else}}
+            {{#if isFollowed}}
+              <form action="/followships/{{id}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn btn-danger btn-sm float-right">Unfollow</button>
+              </form>
+            {{else}}
+              <form action="/followships/" method="POST">
+                <button type="submit" name="id" value="{{id}}"
+                  class="btn btn-primary btn-sm float-right">Follow</button>
+              </form>
+            {{/if}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
