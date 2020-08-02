@@ -1,0 +1,180 @@
+<div class="row mt-5">
+  <div class="col-md-8">
+    <form class="post-tweet pr-3" action="/tweets" method="POST">
+      <div class="mb-1">
+        <textarea class="form-control" id="description" name="description" placeholder="Post your tweet" rows="3"
+          maxlength="140" required></textarea>
+        <div id="dataForOutput" style="display: none;"></div>
+        <div class="invalid-feedback">
+          Please enter a message in the textarea.
+        </div>
+      </div>
+      <div class="d-flex justify-content-between">
+        <div class="googleMapTag d-flex justify-content-start">
+          {{!-- 打卡位置 --}}
+          {{!-- <div class="tag border border-success rounded mt-2 p-1 h-75 pl-2" style="line-height:1.6">Location:Taiwan<i
+              class="fa fa-trash mx-2" aria-hidden="true"></i>
+          </div> --}}
+        </div>
+        <div class="btn">
+          <button class="btn btn-outline-primary float-right">Tweet</button>
+          <button type="button" class="btn btn-outline-info float-right mr-1 " data-toggle="modal"
+            data-target="#googleMapModal">
+            location
+          </button>
+
+        </div>
+      </div>
+    </form>
+
+
+    <div class="mt-3 list-group container">
+      {{#each tweets}}
+        <div class="list-group-item mb-2 row mx-0 d-flex" style="border-radius: 7px;">
+          <div class="col-2 d-flex justify-content-center pt-2 pl-1">
+            <img style="left:-7px;border-radius:0.7rem;" src="{{this.User.avatar}}" width="80" height="80"
+              alt="user avatar">
+          </div>
+          <div class="col-10 p-2">
+            <a class="mb-1" href="/users/{{this.User.id}}/tweets">@{{this.User.name}}</a>
+            <small>{{moment this.createdAt}}</small>
+            <div class="d-flex justify-content-between" style="overflow-wrap:anywhere">
+              <p>{{this.description}}</p>
+            </div>
+            <div class="row align-items-center ml-0">
+              <a href="/tweets/{{this.id}}/replies">Reply({{{this.numOfReplies}}})</a>
+              {{#if this.isOwner}}
+                <button class="btn btn-link"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                  Like({{{this.numOfLikes}}})
+                </button>
+              {{else}}
+                {{#if this.isLiked}}
+                  <form action="/tweets/{{this.id}}/unlike" method="POST">
+                    <button class="btn btn-link"><i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                      Like({{{this.numOfLikes}}})
+                    </button>
+                  </form>
+                {{else}}
+                  <form action="/tweets/{{this.id}}/like" method="POST">
+                    <button class="btn btn-link"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                      Like({{{this.numOfLikes}}})
+                    </button>
+                  </form>
+                {{/if}}
+              {{/if}}
+              {{#if this.location}}
+                <!-- Large modal -->
+                <button type="button" class="btn btn-outline-info float-right ml-auto mr-1" data-toggle="modal"
+                  data-target=".bd-location{{this.id}}-modal-lg" id="tweetLocation" data-location="{{this.location}}"
+                  data-lat="{{this.latitude}}" data-lng="{{this.longitude}}" data-id="{{this.id}}">
+                  At {{this.location}}</button>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+
+    {{#each tweets}}
+      {{#if this.location}}
+        <div class="modal fade bd-location{{this.id}}-modal-lg" tabindex="-1" role="dialog"
+          aria-labelledby="myLargeModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              {{!-- google Map --}}
+              <div id="map_{{this.id}}" style="height: 75vh;"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{/if}}
+    {{/each}}
+
+  </div>
+  <div class="col-md-4">
+    <h2>Popular Users</h2>
+    <div class="mt-3 list-group container">
+      {{#each top10PopularUsers}}
+        <div class="list-group-item mb-2 row d-flex p-2" style="border-radius: 7px;">
+          <div class="col-4 d-flex justify-content-center pt-2 pl-1">
+            <img style="left:-7px;border-radius:0.7rem;" src="{{this.avatar}}" width="80" height="80" alt="user avatar">
+          </div>
+          <div class="col-8 p-2">
+            <a class="mb-1" href="/users/{{this.id}}/tweets">@{{this.name}} ( {{this.FollowersCount}} Followers )</a>
+            <div class="d-flex justify-content-between">
+              <p>{{this.introduction}} ...</p>
+            </div>
+            <div class="followship d-flex justify-content-end">
+              {{#if this.isOwner}}
+                <a href="/users/{{this.id}}/edit" class="btn btn-sm btn-outline-primary ">Edit Profile</a>
+              {{else}}
+                {{#if this.isFollowed }}
+                  <form action="/followships/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
+                    <button type="submit" class="btn btn-sm btn-outline-danger ">Unfollow</button>
+                  </form>
+                {{else}}
+                  <form action="/followships" method="POST" style="display: contents;">
+                    <input type="hidden" name="id" value="{{this.id}}">
+                    <button type="submit" class="btn btn-sm btn-outline-primary ">Follow</button>
+                  </form>
+                {{/if}}
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="?page={{prev}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    {{#each totalPage}}
+      <li class="page-item {{#ifCond this ../page}}active{{/ifCond}}"><a class="page-link"
+          href="?page={{this}}">{{this}}</a></li>
+    {{/each}}
+    <li class="page-item">
+      <a class="page-link" href="?page={{next}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+
+<!-- Modal -->
+<div class="modal fade" id="googleMapModal" tabindex="-1" role="dialog" aria-labelledby="googleMapModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="googleMapModalLabel">Google Map</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body border m-0 p-0" style="height: 50vh;">
+        {{!-- google Map --}}
+        <input type="text" class="form-control " id="search" placeholder="Search and click location to add...">
+        <div id="map" style="height: 100%;"></div>
+      </div>
+      <div class="modal-footer mt-5">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id='quitBtn'>Quit</button>
+        <button type="button" class="btn btn-primary" id="inputBtn">Add Location</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/javascripts/googleMapForTweets.js"></script>
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key={{Google_API_KEY}}&callback=initMap&libraries=places"></script>
+<script src="/javascripts/main.js"></script>

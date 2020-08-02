@@ -1,0 +1,154 @@
+<div class="row mt-5">
+  <div class="col-md-4 pr-5 order-2 order-md-1">
+    <div class="text-center">
+      <img class="avatar img-circle img-thumbnail" width="200" height="200" src="{{tweetOwner.avatar}}" alt="avatar">
+    </div>
+
+    <ul class="list-group list-group-flush py-5 px-lg-5">
+      <li class="list-group-item border-top-0 border-bottom-0">
+        <h3>{{tweetOwner.name}}</h3>
+      </li>
+      <li class="list-group-item border-top-0 border-bottom-0">
+        <p>{{tweetOwner.introduction}}</p>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center border-top-0">
+        Tweets
+        <span class="badge badge-primary badge-pill">{{numOfTweeks}}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        Following
+        <span class="badge badge-primary badge-pill">{{numOfFollowings}}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        Follower
+        <span class="badge badge-primary badge-pill">{{numOfFollowers}}</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        like
+        <span class="badge badge-primary badge-pill">{{numOfLikedTweets}}</span>
+      </li>
+      <li class="list-group-item border-top-0">
+        {{#if isOwner}}
+          <a href="/users/{{tweetOwner.id}}/edit" class="btn btn-md btn-outline-primary mx-auto">Edit Profile</a>
+        {{else}}
+          {{#if isFollowed }}
+            <form action="/followships/{{tweetOwner.id}}?_method=DELETE" method="POST" style="display: contents;">
+              <button type="submit" class="btn btn-md btn-outline-danger mx-auto">Unfollow</button>
+            </form>
+          {{else}}
+            <form action="/followships" method="POST" style="display: contents;">
+              <input type="hidden" name="id" value="{{tweetOwner.id}}">
+              <button type="submit" class="btn btn-md btn-outline-primary mx-auto">Follow</button>
+            </form>
+          {{/if}}
+        {{/if}}
+      </li>
+    </ul>
+  </div>
+  <div class="col-md-8 order-md-1">
+
+    {{!-- secion Tweet --}}
+    <div class="position-relative" style="right: 0.5rem;">
+      <h2>Tweets</h2>
+    </div>
+    <div class="list-group-item row d-flex mt-4 mb-5 mx-0 rounded">
+      <div class="col-2 px-0 mr-sm-0 mr-2 my-2" style="max-width: fit-content;">
+        <img style="border-radius:0.7rem;" src="{{tweetOwner.avatar}}" width="80" height="80" alt="">
+      </div>
+      <div class="col-9 col-lg-10 px-0 pl-sm-3">
+        <a class="mb-1" href="/users/{{tweetOwner.id}}/tweets">@{{tweetOwner.name}}</a>
+        <small>{{moment tweet.createdAt}}</small>
+        <div class="d-flex justify-content-between" style="overflow-wrap:anywhere">
+          <p>{{tweet.description}}</p>
+        </div>
+        <div class="row align-items-center pl-3">
+          <a href="/tweets/{{tweet.id}}/replies">Reply({{{replies.length}}})</a>
+          {{#if isOwner}}
+            <button class="btn btn-link"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+              Like({{{numOfLikes}}})
+          {{else}}
+            {{#if isLiked}}
+              <form action="/tweets/{{tweet.id}}/unlike" method="POST">
+                <button class="btn btn-link"><i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                  Like({{{numOfLikes}}})
+                </button>
+              </form>
+            {{else}}
+              <form action="/tweets/{{tweet.id}}/like" method="POST">
+                <button class="btn btn-link"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                  Like({{{numOfLikes}}})
+                </button>
+              </form>
+            {{/if}}
+          {{/if}}
+          {{#if tweet.location}}
+            <!-- Large modal -->
+            <button type="button" class="btn btn-outline-info float-right ml-auto mr-1" data-toggle="modal"
+              data-target=".bd-location{{tweet.id}}-modal-lg" id="tweetLocation" data-location="{{tweet.location}}"
+              data-lat="{{tweet.latitude}}" data-lng="{{tweet.longitude}}" data-id="{{tweet.id}}">
+              At {{tweet.location}}</button>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+
+
+    {{#if tweet.location}}
+      <div class="modal fade bd-location{{tweet.id}}-modal-lg" tabindex="-1" role="dialog"
+        aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            {{!-- google Map --}}
+            <div id="map_{{tweet.id}}" style="height: 75vh;"></div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+
+
+    {{!-- section Replies --}}
+    <div class="position-relative" style="right: 0.5em;">
+      <h2>Replies</h2>
+    </div>
+    <div class="mt-4 list-group">
+      {{#if replies}}
+        {{#each replies}}
+          <div class="list-group-item row d-flex my-1 mx-0 rounded">
+            <div class="col-2 px-0 mr-sm-0 mr-2 my-2" style="max-width: fit-content;">
+              <img style="border-radius:0.7rem;" src="{{this.User.avatar}}" width="80" height="80" alt="">
+            </div>
+            <div class="col-9 col-lg-10 px-0 pl-sm-3">
+              <a class="mb-1" href="/users/{{this.User.id}}/tweets">@{{this.User.name}}</a>
+              <small>{{moment this.createdAt}}</small>
+              <div class="d-flex justify-content-between" style="overflow-wrap:anywhere">
+                <p>{{this.comment}}</p>
+              </div>
+            </div>
+          </div>
+        {{/each}}
+      {{/if}}
+      <form class="mb-5 post-tweet" action="/tweets/{{tweet.id}}/replies" method="POST">
+        <div class="mb-1">
+
+          <textarea class="form-control" name="comment" id="comment" placeholder="Enter your reply" rows="3"
+            maxlength="140" required></textarea>
+          <div class="invalid-feedback">
+            Please enter a message in the textarea.
+          </div>
+          <input type="hidden" name="userId" value="{{user.id}}">
+        </div>
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-outline-primary mt-3 float-right">Reply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/javascripts/main.js"></script>
+<script src="/javascripts/googleMap.js"></script>
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key={{Google_API_KEY}}&callback=initMap&libraries=places"></script>
