@@ -1,0 +1,101 @@
+<div class="container my-3">
+    <div class="row col-12">
+        <div class="col-4">
+            <div class="col-8 my-2">
+                <img src="{{currentUser.avatar}}" class="rounded" alt="大頭貼" width="200px" height="200px">
+                <div class="my-3">
+                    <h2>{{currentUser.name}}</h2>
+                    <p style="word-wrap: break-word;">{{currentUser.introduction}}</p>
+                </div>
+                <div class="my-3">
+                    <a href="/users/{{currentUser.id}}/tweets">
+                        <h3>Tweets：{{tweetsAmount}}</h3>
+                    </a>
+                    <a href="/users/{{currentUser.id}}/followings">
+                        <h3>Following：{{followingsAmonut}}</h3>
+                    </a>
+                    <a href="/users/{{currentUser.id}}/followers">
+                        <h3>Follower：{{followersAmount}}</h3>
+                    </a>
+                    <a href="/users/{{currentUser.id}}/likes">
+                        <h3>Like：{{likesAmount}}</h3>
+                    </a>
+                </div>
+                {{#ifCond currentUser.id userInfo.id}}
+                <div class="text-center">
+                    <a href="/users/{{currentUser.id}}/edit" type="button" class="btn btn-primary">Edit Profile</a>
+                </div>
+                {{else}}
+                {{#if isFollowed}}
+                <form action="/followships/{{currentUser.id}}?_method=DELETE" method="POST">
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-outline-danger">Unfollow</button>
+                    </div>
+                </form>
+                <div class="text-center my-3">
+                    <a href="/chat/{{currentUser.id}}" class="btn"
+                        style="font-size: 24px;color:rgb(250,150,10);border-color:rgb(250, 150, 10)">StartChat</a>
+                </div>
+                {{else}}
+                <form action="/followships" method="POST">
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Follow</button>
+                    </div>
+                    <input type="hidden" name="id" value="{{currentUser.id}}">
+                </form>
+                <div class="text-center my-3">
+                    <a href="/chat/{{currentUser.id}}" class="btn"
+                        style="font-size: 24px;color:rgb(250,150,10);border-color:rgb(250, 150, 10)">StartChat</a>
+                </div>
+                {{/if}}
+                {{/ifCond}}
+            </div>
+        </div>
+        <div class="col-8">
+            {{#ifCond nowis 'following'}}
+            <h2>followings</h2>
+            {{else}}
+            <h2>followers</h2>
+            {{/ifCond}}
+            <div class="row my-2">
+                {{#each followingsAndFollowers}}
+                <div class="col-md-6">
+                    <div class="card my-2">
+                        <div class="row ">
+                            <div class="col-md-5">
+                                <img src="{{this.avatar}}" class="card-img mt-2 ml-2" alt="大頭貼" width="100px"
+                                    height="110px">
+                            </div>
+                            <div class="col-md-7">
+                                <div class="card-body">
+                                    <a href="/users/{{this.id}}/tweets">
+                                        <h5 class="card-title">@{{this.name}}</h5>
+                                    </a>
+                                    <p class="card-text">{{subString this.introduction}}</p>
+                                </div>
+                                {{#ifCond this.id ../user.id}}
+                                {{else}}
+                                {{#if this.isFollowed}}
+                                <form action="/followships/{{this.id}}?_method=DELETE" method="POST">
+                                    <div class="text-right mb-2 mr-2">
+                                        <button type="submit" class="btn btn-danger">UnFollow</button>
+                                    </div>
+                                </form>
+                                {{else}}
+                                <form action="/followships" method="POST">
+                                    <div class="text-right mb-2 mr-2">
+                                        <button type="submit" class="btn btn-primary">Follow</button>
+                                    </div>
+                                    <input type="hidden" name="id" value="{{this.id}}">
+                                </form>
+                                {{/if}}
+                                {{/ifCond}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</div>
