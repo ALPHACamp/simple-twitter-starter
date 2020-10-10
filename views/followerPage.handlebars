@@ -1,0 +1,46 @@
+<h1>Follower Page</h1>
+
+<div class="row">
+  <div class="col-4">
+    <img src="{{userData.avatar}}" alt="avatar" height="200px" width="200px">
+    <h4>{{userData.name}}</h4>
+    <p>{{userData.introduction}}</p>
+    <ul>
+      <li>Tweets:{{#count userData.Tweets}}{{/count}}</li>
+      <li>Following:{{#count userData.Followings}}{{/count}}</li>
+      <li>Follower:{{#count userData.Followers}}{{/count}}</li>
+      <li>Like:{{#count userData.Likes}}{{/count}}</li>
+    </ul>
+    <a href="/users/{{userData.id}}/edit">編輯個人資料</a>
+  </div>
+  <div class="col-8">
+    <h1>Follower</h1>
+    <div class="row">
+      {{#each userFollowers}}
+      <div class="col-6">
+        <div class="card mb-3">
+          <div class="row no-gutters">
+            <div class="col-md-4">
+              <img src="{{this.avatar}}" class="card-img" alt="avatar">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title"><a href="/users/{{this.id}}/tweets">{{this.name}}</a></h5>
+                <p class="card-text">{{this.introduction}}</p>
+                {{#if this.isFollowed}}
+                <form action="/followships/{{this.id}}?_method=DELETE" method="POST" style="display: inline">
+                  <button type="submit" class="btn btn-danger">Unfollow</button></form>
+                {{else}}
+                <form action="/followships" method="POST" style="display: inline">
+                  <input type="hidden" name="id" value="{{this.id}}">
+                  <button type="submit" class="btn btn-primary">Follow</button> </form>
+                {{/if}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+</div>
