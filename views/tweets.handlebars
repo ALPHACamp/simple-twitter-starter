@@ -1,0 +1,116 @@
+<!--views/tweets.handlebars-->
+<div class="row mt-4">
+  <div class="left col-md-8">
+    <form action="/tweets" method="POST">
+      <textarea class="form-control rounded-0" name="description" id="description" rows="5" maxlength="140" required
+        placeholder="What's on your mind?"></textarea>
+      <div class="invalid-feedback feedback">
+        請輸入 Tweet 內容
+      </div>
+      <button class="btn btn-primary float-right mt-3" type="submit">Tweet</button>
+    </form>
+    <table class="table table-sm table-borderless">
+      <tbody>
+        {{#each tweets}}
+        <tr>
+          <td><img src="{{this.User.avatar}}" alt="{{this.User.name}}" style="width: 100px"></td>
+          <td>
+            <p><a href="/users/{{this.User.id}}/tweets">@{{this.User.name}}</a> {{moment this.createdAt}}</p>
+            <p>{{this.description}}</p>
+            <span>
+              <a class="text-primary mr-3" href="/tweets/{{this.id}}/replies"><i
+                  class="far fa-comment"></i>({{this.replyCount}})</a>
+              {{#if this.isLiked}}
+              <form action="/tweets/{{this.id}}/unlike" method="POST" style="display: inline-block">
+                <button type="submit" class="btn btn-link" style="text-decoration:none"><i
+                    class=" fas fa-thumbs-up"></i>({{this.totalLikedUsers}})</button>
+              </form>
+              {{else}}
+              <form action="/tweets/{{this.id}}/like" method="POST" style="display:inline-block">
+                <button type="submit" class="btn btn-link" style="text-decoration:none"><i
+                    class="far fa-thumbs-up"></i>({{this.totalLikedUsers}})</button>
+              </form>
+              {{/if}}
+            </span>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item">
+          <a class="page-link" href="/tweets?page={{prev}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {{#each totalPage}}
+        {{#ifCond this ../page}}
+        <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
+        {{else}}
+        <li class="page-item"><a class="page-link" href="/tweets?page={{this}}">{{this}}</a></li>
+        {{/ifCond}}
+        {{/each}}
+        <a class="page-link" href="/tweets?page={{next}}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+
+  <div class="right col-md-4">
+    <h3>Popular</h3>
+    {{#each topFollowers}}
+    <div class="card mb-3">
+      <div class="card-body row">
+        <div class="col-md-3">
+          <img src="{{this.avatar}}" alt="{{this.name}}" style="width: 50px">
+        </div>
+        <div class="col-md-9">
+          <p><a href="/users/{{this.id}}/tweets">@{{this.name}}</a></p>
+          <p>{{this.introduction}}</p>
+          {{#ifCond this.id ../user.id}}
+          <a href="/users/{{this.id}}/tweets" class="float-right"><button class="btn btn-primary">Edit
+              Profile({{this.totalFollowers}})</button></a>
+          {{else}}
+          {{#if this.isFollowed }}
+          <form action="/followships/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
+              class="btn btn-danger float-right">UnFollow({{this.totalFollowers}})</button></form>
+          {{else}}
+          <form action="/followships" method="POST">
+            <button type="submit" class="btn btn-primary float-right" name="id"
+              value={{this.id}}>Follow({{this.totalFollowers}})</button>
+          </form>
+          {{/if}}
+          {{/ifCond}}
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+<script>
+  let addTweet = document.getElementById('description')
+  addTweet.addEventListener('input', showTweetLength)
+  function showTweetLength(event) {
+    let tweetLength = this.value.length
+    let feedback = addTweet.nextElementSibling
+    if (tweetLength === 0) {
+      feedback.innerHTML = "請記得輸入內容"
+      feedback.classList.add('text-danger')
+    } else if (tweetLength < 140 && tweetLength > 0) {
+      feedback.innerHTML = `你已輸入 ${tweetLength} 個字, 還剩 ${140 - tweetLength} 個字`
+      feedback.style.display = 'inherit'
+      feedback.classList.remove('text-danger')
+      feedback.classList.add('text-success')
+    } else {
+      feedback.innerHTML = `你已輸入 ${tweetLength} 個字，超過上限的將不會存入`
+      feedback.style.display = 'inherit'
+      feedback.classList.remove('text-success')
+      feedback.classList.add('text-danger')
+    }
+  }
+</script>
