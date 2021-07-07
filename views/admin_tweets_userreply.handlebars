@@ -1,0 +1,39 @@
+{{#if isAuthenticated}}
+{{> user_nav }}
+{{/if}}
+{{> admin_nav }}
+<div class="row">
+    <div class="col-1"></div>
+    <div class="admiv_tweets col-10">
+        {{!-- 搜尋列表 --}}
+
+        <form action="" method="post">
+            <div class="input-group ml-auto mb-3 w-25">
+                <input type="text" class="radious form-control" placeholder="Enter User name" name="name" id="">
+                <div class="input-group-append ">
+                    <button class="btn btn-primary radious" type="submit">搜</button>
+                </div>
+            </div>
+        </form>
+
+        {{!-- table 區塊 --}}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Time</th>
+                    <th scope="col">USER</th>
+                    <th scope="col">DESCRIPTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each comments}}
+                <tr>
+                    <td>{{#moment_hr_min this.commentTime}}{{/moment_hr_min}}
+                    </td>
+                    <td><img class="h-25  rounded-circle mr-2" src="{{this.commentUserImg}}"
+                            alt="{{this.commentUserId}}大頭貼">{{this.commentUserName}}</td>
+                    <td>{{this.comment}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
