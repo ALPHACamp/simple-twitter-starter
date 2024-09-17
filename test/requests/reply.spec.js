@@ -1,3 +1,5 @@
+
+
 var chai = require('chai')
 var request = require('supertest')
 var sinon = require('sinon')
@@ -12,7 +14,7 @@ describe('# reply request', () => {
   context('#index', () => {
     describe('GET /tweets/:id/replies', () => {
       before(async() => {
-        
+
         this.ensureAuthenticated = sinon.stub(
           helpers, 'ensureAuthenticated'
         ).returns(true);
@@ -42,7 +44,7 @@ describe('# reply request', () => {
       })
 
       after(async () => {
-        
+
         this.ensureAuthenticated.restore();
         this.getUser.restore();
         await db.User.destroy({where: {},truncate: true})
@@ -55,7 +57,7 @@ describe('# reply request', () => {
   context('#post', () => {
     describe('POST /tweets/1/replies successfully', () => {
       before(async() => {
-        
+
         this.ensureAuthenticated = sinon.stub(
           helpers, 'ensureAuthenticated'
         ).returns(true);
@@ -85,7 +87,7 @@ describe('# reply request', () => {
       })
 
       after(async () => {
-        
+
         this.ensureAuthenticated.restore();
         this.getUser.restore();
         await db.User.destroy({where: {},truncate: true})
@@ -96,7 +98,7 @@ describe('# reply request', () => {
 
     describe('POST /tweets/1/replies fail', () => {
       before(async() => {
-        
+
       })
 
       it('will redirect index', (done) => {
@@ -111,7 +113,7 @@ describe('# reply request', () => {
       })
 
       after(async () => {
-        
+
       })
     })
   })
